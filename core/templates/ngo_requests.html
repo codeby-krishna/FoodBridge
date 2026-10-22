@@ -1,0 +1,561 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Requests | FoodBridge</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f8f6;
+            color: #26352d;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: #245c3a;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            color: #245c3a;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #6b756f;
+            font-size: 15px;
+        }
+
+        /* Django messages */
+        .messages-container {
+            margin-bottom: 22px;
+        }
+
+        .alert-message {
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .alert-message.success {
+            background: #e4f5e9;
+            color: #176b3a;
+            border: 1px solid #b9e4c5;
+        }
+
+        .alert-message.error {
+            background: #fde8e8;
+            color: #a12626;
+            border: 1px solid #f4bcbc;
+        }
+
+        .alert-message.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffe69c;
+        }
+
+        .alert-message.info {
+            background: #e7f1ff;
+            color: #174a8b;
+            border: 1px solid #c4dcff;
+        }
+
+        .request-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.07);
+            border: 1px solid #e8eee9;
+        }
+
+        .request-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .food-name {
+            color: #245c3a;
+            font-size: 22px;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .accepted {
+            background: #e4f3e9;
+            color: #247044;
+        }
+
+        .rejected {
+            background: #fde8e8;
+            color: #a33a3a;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .detail-box {
+            background: #f7faf8;
+            padding: 14px;
+            border-radius: 10px;
+            min-width: 0;
+        }
+
+        .label {
+            display: block;
+            color: #7a847e;
+            font-size: 12px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .value {
+            color: #29362f;
+            font-size: 14px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .pickup-box {
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 12px;
+            background: #f7faf8;
+            border: 1px solid #e0e9e2;
+        }
+
+        .pickup-box h3 {
+            color: #245c3a;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .pickup-status {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: #e4f3e9;
+            color: #247044;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .otp-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f1f8f3;
+            border: 1px solid #cfe6d6;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .otp-title {
+            color: #1f7a4d;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .otp-code {
+            display: inline-block;
+            background: white;
+            border: 2px dashed #245c3a;
+            border-radius: 12px;
+            padding: 10px 22px;
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: 7px;
+            color: #123c2a;
+            margin-bottom: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .otp-message {
+            color: #65736b;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .otp-warning {
+            margin-top: 10px;
+            color: #856404;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .empty {
+            background: white;
+            border: 1px solid #e8eee9;
+            border-radius: 16px;
+            padding: 55px 25px;
+            text-align: center;
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .empty h2 {
+            color: #245c3a;
+            margin-bottom: 8px;
+        }
+
+        .empty p {
+            color: #747d77;
+            font-size: 14px;
+        }
+
+        .bottom-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 11px 17px;
+            border-radius: 8px;
+            background: #245c3a;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .btn:hover {
+            background: #17452b;
+        }
+
+        .btn-light {
+            background: #e4f3e9;
+            color: #245c3a;
+        }
+
+        .btn-light:hover {
+            background: #d2e9d9;
+        }
+
+        @media (max-width: 650px) {
+            .navbar {
+                padding: 16px 20px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .back-link {
+                font-size: 12px;
+            }
+
+            .container {
+                margin: 28px auto;
+                padding: 0 14px;
+            }
+
+            .page-header h1 {
+                font-size: 26px;
+            }
+
+            .request-card {
+                padding: 18px;
+            }
+
+            .request-top {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .details {
+                grid-template-columns: 1fr;
+            }
+
+            .otp-code {
+                font-size: 25px;
+                letter-spacing: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="logo">
+            🍃 FoodBridge
+        </a>
+
+        <a href="{% url 'home' %}" class="back-link">
+            ← Back to Home
+        </a>
+    </nav>
+
+    <main class="container">
+
+        <header class="page-header">
+            <h1>🤝 NGO Food Requests</h1>
+            <p>Track the food donations requested by your organization.</p>
+        </header>
+
+        {% if messages %}
+        <div class="messages-container" role="status" aria-live="polite">
+            {% for message in messages %}
+            <div class="alert-message {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% for food_request in requests %}
+
+        <article class="request-card">
+
+            <div class="request-top">
+                <div class="food-name">
+                    🍱 {{ food_request.food.food_name }}
+                </div>
+
+                {% if food_request.status == 'Pending' %}
+                <span class="status pending">Pending</span>
+                {% elif food_request.status == 'Accepted' %}
+                <span class="status accepted">Accepted</span>
+                {% elif food_request.status == 'Rejected' %}
+                <span class="status rejected">Rejected</span>
+                {% else %}
+                <span class="status pending">
+                    {{ food_request.status }}
+                </span>
+                {% endif %}
+            </div>
+
+            <div class="details">
+
+                <div class="detail-box">
+                    <span class="label">Quantity</span>
+                    <span class="value">
+                        {{ food_request.food.quantity }}
+                    </span>
+                </div>
+
+                <div class="detail-box">
+                    <span class="label">Pickup Location</span>
+                    <span class="value">
+                        📍 {{ food_request.food.location }}
+                    </span>
+                </div>
+
+                <div class="detail-box">
+                    <span class="label">Donor Contact</span>
+                    <span class="value">
+                        📞 {{ food_request.food.contact }}
+                    </span>
+                </div>
+
+                <div class="detail-box">
+                    <span class="label">Request Date</span>
+                    <span class="value">
+                        {{ food_request.created_at|date:"d M Y, h:i A" }}
+                    </span>
+                </div>
+
+                {% if food_request.food.best_before %}
+                <div class="detail-box">
+                    <span class="label">Best Before</span>
+                    <span class="value">
+                        {{ food_request.food.best_before|date:"d M Y, h:i A" }}
+                    </span>
+                </div>
+                {% endif %}
+
+            </div>
+
+            {% if food_request.status == 'Accepted' %}
+
+            {% if food_request.pickup_info %}
+
+            <div class="pickup-box">
+                <h3>🚚 Pickup Information</h3>
+
+                <p>
+                    <span class="label">Pickup Status</span>
+                    <span class="pickup-status">
+                        {{ food_request.pickup_info.status }}
+                    </span>
+                </p>
+            </div>
+
+            {% if food_request.pickup_info.status != 'Completed' %}
+
+            <div class="otp-box">
+                <div class="otp-title">
+                    🔐 Pickup Verification OTP
+                </div>
+
+                {% if food_request.pickup_info.verification_otp %}
+                <div class="otp-code">
+                    {{ food_request.pickup_info.verification_otp }}
+                </div>
+
+                <p class="otp-message">
+                    Pickup complete karte waqt authorized volunteer
+                    ko verification code batayein.
+                </p>
+
+                <p class="otp-warning">
+                    ⚠️ OTP ko sirf assigned volunteer ke saath share karein.
+                </p>
+                {% else %}
+                <p class="otp-message">
+                    OTP abhi available nahi hai. Please donor se contact karein.
+                </p>
+                {% endif %}
+            </div>
+
+            {% else %}
+
+            <div class="pickup-box">
+                <h3>✅ Delivery Completed</h3>
+                <p class="otp-message">
+                    Food pickup successfully complete ho chuka hai.
+                </p>
+            </div>
+
+            {% endif %}
+
+            {% else %}
+
+            <div class="pickup-box">
+                <h3>⏳ Pickup Not Created Yet</h3>
+                <p class="otp-message">
+                    Pickup information donor approval ke baad available hogi.
+                </p>
+            </div>
+
+            {% endif %}
+
+            {% elif food_request.status == 'Pending' %}
+
+            <div class="pickup-box">
+                <h3>⏳ Waiting for Donor Approval</h3>
+                <p class="otp-message">
+                    Aapki request submit ho gayi hai. Donor ke response ke baad
+                    yahan updated status aur pickup information dikhegi.
+                </p>
+            </div>
+
+            {% elif food_request.status == 'Rejected' %}
+
+            <div class="pickup-box">
+                <h3>Request Rejected</h3>
+                <p class="otp-message">
+                    Donor ne is request ko reject kar diya hai.
+                    Aap Find Food page par doosre available food items dekh sakte hain.
+                </p>
+            </div>
+
+            {% endif %}
+
+        </article>
+
+        {% empty %}
+
+        <section class="empty">
+            <div class="empty-icon">📋</div>
+            <h2>No Food Requests Yet</h2>
+            <p>
+                Aapne abhi tak kisi food donation ki request nahi ki hai.
+            </p>
+
+            <div class="bottom-actions" style="justify-content: center;">
+                <a href="{% url 'find_food' %}" class="btn">
+                    Find Available Food
+                </a>
+            </div>
+        </section>
+
+        {% endfor %}
+
+        <div class="bottom-actions">
+            <a href="{% url 'find_food' %}" class="btn">
+                🍲 Find More Food
+            </a>
+
+            <a href="{% url 'dashboard' %}" class="btn btn-light">
+                Go to Dashboard
+            </a>
+        </div>
+
+    </main>
+
+</body>
+
+</html>
+```

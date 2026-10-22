@@ -1,0 +1,497 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Food | FoodBridge</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8f4;
+            color: #26352b;
+            line-height: 1.6;
+        }
+
+        nav {
+            background: #176b3a;
+            color: white;
+            padding: 15px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #176b3a, #2e9857);
+            color: white;
+            text-align: center;
+            padding: 45px 20px;
+        }
+
+        .hero h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .section-title {
+            font-size: 25px;
+            color: #176b3a;
+            margin-bottom: 18px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+
+        .search-box input {
+            flex: 1;
+            min-width: 200px;
+            padding: 13px;
+            border: 1px solid #cbd8cc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .search-box button,
+        .btn,
+        .nearby-btn {
+            padding: 11px 18px;
+            border: none;
+            border-radius: 7px;
+            background: #218447;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .search-box button:hover,
+        .btn:hover,
+        .nearby-btn:hover {
+            background: #176b3a;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .nearby-panel {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 12px #00000010;
+        }
+
+        #nearby-status {
+            margin-top: 12px;
+            color: #526456;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .map-card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #00000010;
+            margin-bottom: 35px;
+        }
+
+        #food-locations-map {
+            width: 100%;
+            height: 400px;
+            border-radius: 9px;
+            background: #e5eee5;
+        }
+
+        #map-message {
+            margin-top: 10px;
+            color: #5a6a5d;
+            font-size: 14px;
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+        }
+
+        .food-card {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 3px 12px #00000010;
+            border-top: 4px solid #23834a;
+        }
+
+        .food-card h3 {
+            color: #176b3a;
+            font-size: 21px;
+            margin-bottom: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .food-card p {
+            margin-bottom: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            background: #e0f4e5;
+            color: #176b3a;
+        }
+
+        .badge.critical {
+            background: #ffe1e1;
+            color: #b42318;
+        }
+
+        .badge.urgent {
+            background: #fff0ce;
+            color: #925b00;
+        }
+
+        .badge.expired {
+            background: #e5e5e5;
+            color: #555;
+        }
+
+        .badge.unknown {
+            background: #e8eaf0;
+            color: #4b5563;
+        }
+
+        .distance {
+            color: #176b3a;
+            font-weight: bold;
+        }
+
+        .expiry-countdown {
+            font-weight: bold;
+            padding: 9px 10px;
+            border-radius: 7px;
+            background: #e0f4e5;
+            color: #176b3a;
+            margin-top: 8px;
+        }
+
+        .expiry-countdown.expiry-critical {
+            background: #ffe1e1;
+            color: #b42318;
+        }
+
+        .expiry-countdown.expiry-urgent {
+            background: #fff0ce;
+            color: #925b00;
+        }
+
+        .expiry-countdown.expiry-expired {
+            background: #e5e5e5;
+            color: #555;
+        }
+
+        .expiry-countdown.expiry-unknown {
+            background: #e8eaf0;
+            color: #4b5563;
+        }
+
+        .food-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .food-actions form {
+            margin: 0;
+        }
+
+        .btn-secondary {
+            background: #e7f3e9;
+            color: #176b3a;
+        }
+
+        .btn-secondary:hover {
+            background: #d4ead9;
+        }
+
+        .claim-btn {
+            padding: 11px 18px;
+            border: none;
+            border-radius: 7px;
+            background: #218447;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .claim-btn:hover {
+            background: #176b3a;
+        }
+
+        .empty-state {
+            background: white;
+            padding: 35px 20px;
+            border-radius: 12px;
+            text-align: center;
+            color: #617064;
+            grid-column: 1 / -1;
+        }
+
+        footer {
+            margin-top: 50px;
+            background: #154d2e;
+            color: white;
+            text-align: center;
+            padding: 22px 15px;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 27px;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+            #food-locations-map {
+                height: 320px;
+            }
+
+            .food-actions {
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="{% url 'home' %}" class="logo">FoodBridge</a>
+
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'find_food' %}">Find Food</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>Find Food Near You</h1>
+        <p>Discover available food donations and help reduce food waste.</p>
+    </header>
+
+    <main class="container">
+
+        <!-- Search food -->
+        <form class="search-box" method="GET" action="{% url 'find_food' %}">
+            <input type="text" name="q" id="food-search" value="{{ query }}"
+                placeholder="Search food by name or location...">
+
+            {% if user_lat != None and user_lon != None %}
+            <input type="hidden" name="lat" value="{{ user_lat }}">
+            <input type="hidden" name="lon" value="{{ user_lon }}">
+            {% endif %}
+
+            <button type="submit">Search</button>
+
+            <a class="btn" href="{% url 'find_food' %}">
+                Show All
+            </a>
+        </form>
+
+        <!-- Nearby food -->
+        <section class="nearby-panel">
+            <h2 class="section-title">Find Nearby Food 📍</h2>
+
+            <p>
+                Allow location access to sort food donations by distance.
+            </p>
+
+            <button type="button" class="nearby-btn" id="nearby-food-btn">
+                📍 Find Food Near Me
+            </button>
+
+            <p id="nearby-status" role="status">
+                {% if user_lat != None and user_lon != None %}
+                Your location is selected. Food is sorted by distance where coordinates are available.
+                {% else %}
+                Click the button and allow location access in your browser.
+                {% endif %}
+            </p>
+        </section>
+
+        <!-- Map -->
+        <section>
+            <h2 class="section-title">Food Locations Map 📍</h2>
+
+            <div class="map-card">
+                <div id="food-locations-map"></div>
+
+                <p id="map-message" role="status">
+                    Loading map...
+                </p>
+
+                {{ food_locations|json_script:"food-map-data" }}
+            </div>
+        </section>
+
+        <!-- Available food -->
+        <section>
+            <h2 class="section-title">Available Food 🍲</h2>
+
+            <div class="food-grid" id="food-grid">
+
+                {% for food in foods %}
+                <article class="food-card" data-food-id="{{ food.id }}">
+
+                    <h3>{{ food.food_name }}</h3>
+
+                    <span class="badge {{ food.urgency_level|lower }}">
+                        {{ food.urgency_level }}
+                    </span>
+
+                    <p>
+                        <strong>Quantity:</strong>
+                        {{ food.quantity }}
+                    </p>
+
+                    <p>
+                        <strong>Location:</strong>
+                        {{ food.location }}
+                    </p>
+
+                    {% if food.distance_km != None %}
+                    <p class="distance">
+                        📍 Distance: {{ food.distance_km }} km away
+                    </p>
+                    {% endif %}
+
+                    <p>
+                        <strong>Description:</strong>
+                        {{ food.description|truncatewords:25 }}
+                    </p>
+
+                    {% if food.best_before %}
+                    <p>
+                        <strong>Best before:</strong>
+                        {{ food.best_before|date:"d M Y, h:i A" }}
+                    </p>
+
+                    <p class="expiry-countdown" data-expiry="{{ food.best_before|date:'c' }}">
+                        Checking expiry time...
+                    </p>
+                    {% else %}
+                    <p class="expiry-countdown expiry-unknown">
+                        ⚪ Expiry time not provided
+                    </p>
+                    {% endif %}
+
+                    <div class="food-actions">
+
+                        <a class="btn btn-secondary" href="{% url 'food_detail' food.id %}">
+                            View Details
+                        </a>
+
+                        {% if user.is_authenticated and ngo_profile_exists %}
+                        <form method="post" action="{% url 'request_food' food.id %}">
+                            {% csrf_token %}
+
+                            <button class="claim-btn" type="submit">
+                                Claim Food
+                            </button>
+                        </form>
+                        {% elif not user.is_authenticated %}
+                        <a class="btn" href="{% url 'login' %}">
+                            Login to Claim
+                        </a>
+                        {% endif %}
+
+                    </div>
+                </article>
+
+                {% empty %}
+                <div class="empty-state">
+                    <h3>No Food Available Right Now</h3>
+                    <p>Please check again later for new food donations.</p>
+                </div>
+                {% endfor %}
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>FoodBridge — Sharing Food, Spreading Hope ❤️</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{% static 'core/find_food.js' %}"></script>
+</body>
+
+</html>

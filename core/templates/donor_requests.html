@@ -1,0 +1,607 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Requests | FoodBridge</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8f5;
+            color: #26352d;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: #245c3a;
+            color: white;
+            padding: 16px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            color: #245c3a;
+            font-size: 30px;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: #68756c;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 13px 16px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background: #e4f3e9;
+            color: #245c3a;
+            overflow-wrap: anywhere;
+        }
+
+        .message.error {
+            background: #fde8e8;
+            color: #a33a3a;
+        }
+
+        .message.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .request-card {
+            background: white;
+            border: 1px solid #e4ebe5;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+        }
+
+        .request-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .food-name {
+            color: #245c3a;
+            font-size: 22px;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.accepted {
+            background: #e4f3e9;
+            color: #247044;
+        }
+
+        .status.rejected {
+            background: #fde8e8;
+            color: #a33a3a;
+        }
+
+        .status.assigned {
+            background: #dcecff;
+            color: #205493;
+        }
+
+        .status.completed {
+            background: #d9f2eb;
+            color: #17664d;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 13px;
+            margin-bottom: 20px;
+        }
+
+        .detail-box {
+            padding: 14px;
+            background: #f6f9f7;
+            border-radius: 9px;
+            min-width: 0;
+        }
+
+        .label {
+            display: block;
+            color: #748078;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .value {
+            font-size: 14px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .actions form {
+            flex: 1;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .accept-btn {
+            background: #245c3a;
+            color: white;
+        }
+
+        .accept-btn:hover {
+            background: #19472c;
+        }
+
+        .reject-btn {
+            background: #fde8e8;
+            color: #a33a3a;
+        }
+
+        .reject-btn:hover {
+            background: #f8d4d4;
+        }
+
+        .accepted-message,
+        .rejected-message {
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .accepted-message {
+            background: #e4f3e9;
+            color: #247044;
+        }
+
+        .rejected-message {
+            background: #fde8e8;
+            color: #a33a3a;
+        }
+
+        .pickup-panel {
+            margin-top: 20px;
+            padding: 18px;
+            border: 1px solid #d9eadd;
+            border-radius: 12px;
+            background: #f3f8f4;
+        }
+
+        .pickup-panel h3 {
+            color: #245c3a;
+            margin-bottom: 14px;
+            font-size: 18px;
+        }
+
+        .pickup-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .pickup-detail {
+            background: white;
+            padding: 13px;
+            border-radius: 8px;
+            min-width: 0;
+        }
+
+        .otp-box {
+            margin-top: 14px;
+            padding: 18px;
+            background: #fff7df;
+            border: 1px solid #f0dfa7;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .otp-number {
+            display: inline-block;
+            font-size: 30px;
+            letter-spacing: 7px;
+            font-weight: 800;
+            color: #245c3a;
+            background: white;
+            padding: 7px 18px;
+            margin: 8px 0;
+            border: 1px dashed #245c3a;
+            border-radius: 8px;
+        }
+
+        .pickup-note {
+            color: #68756c;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .empty {
+            background: white;
+            border-radius: 14px;
+            padding: 45px 20px;
+            text-align: center;
+            border: 1px solid #e4ebe5;
+        }
+
+        .empty h2 {
+            color: #245c3a;
+            margin-bottom: 8px;
+        }
+
+        .empty p {
+            color: #68756c;
+        }
+
+        footer {
+            margin-top: 45px;
+            padding: 20px;
+            background: #19472c;
+            color: white;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .container {
+                margin: 25px auto;
+                padding: 0 14px;
+            }
+
+            .page-header h1 {
+                font-size: 25px;
+            }
+
+            .request-card {
+                padding: 17px;
+            }
+
+            .food-name {
+                font-size: 19px;
+            }
+
+            .details,
+            .pickup-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .otp-number {
+                font-size: 25px;
+                letter-spacing: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="logo">🍃 FoodBridge</a>
+        <a href="{% url 'dashboard' %}" class="back-link">← Dashboard</a>
+    </nav>
+
+    <main class="container">
+
+        <header class="page-header">
+            <h1>📋 Donor Requests</h1>
+            <p>Review NGO food requests and manage pickup progress.</p>
+        </header>
+
+        {% if messages %}
+        <div class="messages" aria-live="polite">
+            {% for message in messages %}
+            <div class="message
+                {% if message.tags == 'error' %}error
+                {% elif message.tags == 'warning' %}warning
+                {% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% for food_request in requests %}
+
+        <article class="request-card">
+
+            <div class="request-top">
+                <h2 class="food-name">
+                    🍱 {{ food_request.food.food_name }}
+                </h2>
+
+                {% if food_request.status == 'Accepted' %}
+                <span class="status accepted">Accepted</span>
+                {% elif food_request.status == 'Rejected' %}
+                <span class="status rejected">Rejected</span>
+                {% else %}
+                <span class="status">{{ food_request.status }}</span>
+                {% endif %}
+            </div>
+
+            <div class="details">
+
+
+                <div class="detail-box">
+                    <span class="label">Total Donated</span>
+                    <span class="value">
+                        {{ food_request.food.total_quantity }}
+                        {{ food_request.food.quantity_unit }}
+                    </span>
+                </div>
+
+                <div class="detail-box">
+                    <span class="label">NGO Requested</span>
+                    <span class="value">
+                        {{ food_request.requested_quantity }}
+                        {{ food_request.food.quantity_unit }}
+                    </span>
+                </div>
+
+                <div class="detail-box">
+                    <span class="label">Remaining Stock</span>
+                    <span class="value">
+                        {{ food_request.food.remaining_quantity }}
+                        {{ food_request.food.quantity_unit }}
+                    </span>
+                </div>
+
+
+                <div class="detail-box">
+                    <span class="label">Pickup Location</span>
+                    <span class="value">
+                        📍 {{ food_request.food.location }}
+                    </span>
+                </div>
+
+                <div class="detail-box">
+                    <span class="label">NGO Organization</span>
+                    <span class="value">
+                        {{ food_request.ngo.organization_name|default:"NGO" }}
+                    </span>
+                </div>
+
+                <div class="detail-box">
+                    <span class="label">NGO Contact</span>
+                    <span class="value">
+                        {{ food_request.ngo.contact|default:"Not available" }}
+                    </span>
+                </div>
+
+                <div class="detail-box">
+                    <span class="label">Request Date</span>
+                    <span class="value">
+                        {{ food_request.created_at|date:"d M Y, h:i A" }}
+                    </span>
+                </div>
+
+                <div class="detail-box">
+                    <span class="label">Food Best Before</span>
+                    <span class="value">
+                        {% if food_request.food.best_before %}
+                        {{ food_request.food.best_before|date:"d M Y, h:i A" }}
+                        {% else %}
+                        Not specified
+                        {% endif %}
+                    </span>
+                </div>
+
+            </div>
+
+            {% if food_request.status == 'Pending' %}
+
+            <div class="actions">
+
+                <form method="POST" action="{% url 'accept_request' food_request.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn accept-btn">
+                        ✓ Accept Request
+                    </button>
+                </form>
+
+                <form method="POST" action="{% url 'reject_request' food_request.id %}"
+                    onsubmit="return confirm('Are you sure you want to reject this request?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn reject-btn">
+                        ✕ Reject Request
+                    </button>
+                </form>
+
+            </div>
+
+            {% elif food_request.status == 'Accepted' %}
+
+            <div class="accepted-message">
+                ✓ Request accepted. Pickup process can continue.
+            </div>
+
+            {% elif food_request.status == 'Rejected' %}
+
+            <div class="rejected-message">
+                ✕ This request was rejected.
+            </div>
+
+            {% endif %}
+
+            {% if food_request.status == 'Accepted' %}
+
+            {% if food_request.pickup %}
+
+            <section class="pickup-panel">
+                <h3>🚚 Pickup Information</h3>
+
+                <div class="pickup-grid">
+
+                    <div class="pickup-detail">
+                        <span class="label">Pickup Status</span>
+
+                        {% if food_request.pickup.status == 'Completed' %}
+                        <span class="status completed">Completed</span>
+                        {% elif food_request.pickup.status == 'Assigned' %}
+                        <span class="status assigned">Assigned</span>
+                        {% else %}
+                        <span class="status">{{ food_request.pickup.status }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="pickup-detail">
+                        <span class="label">Assigned Volunteer</span>
+                        <span class="value">
+                            {% if food_request.pickup.volunteer %}
+                            {{ food_request.pickup.volunteer.username }}
+                            {% else %}
+                            Waiting for a volunteer
+                            {% endif %}
+                        </span>
+                    </div>
+
+                </div>
+
+                {% if food_request.pickup.status == 'Completed' %}
+
+                <div class="accepted-message" style="margin-top:14px;">
+                    ✓ Pickup completed successfully. OTP is hidden.
+                </div>
+
+                {% elif food_request.pickup.verification_otp %}
+
+                <div class="otp-box">
+                    <span class="label">Pickup Verification OTP</span>
+
+                    <div class="otp-number">
+                        {{ food_request.pickup.verification_otp }}
+                    </div>
+
+                    <p class="pickup-note">
+                        Share this code only with the assigned volunteer
+                        when verifying the food handover.
+                    </p>
+                </div>
+
+                {% else %}
+
+                <p class="pickup-note">
+                    OTP is not available yet. Please check the pickup record.
+                </p>
+
+                {% endif %}
+            </section>
+
+            {% else %}
+
+            <section class="pickup-panel">
+                <h3>🚚 Pickup Information</h3>
+                <p class="pickup-note">
+                    No pickup record was found for this request.
+                    Check that the donor's Accept Request view creates a Pickup.
+                </p>
+            </section>
+
+            {% endif %}
+
+            {% endif %}
+
+        </article>
+
+        {% empty %}
+
+        <section class="empty">
+            <h2>📭 No Requests Yet</h2>
+            <p>There are no requests for your food donations at the moment.</p>
+        </section>
+
+        {% endfor %}
+
+    </main>
+
+    <footer>
+        <p>FoodBridge — Sharing Food, Spreading Hope ❤️</p>
+    </footer>
+
+</body>
+
+</html>
+```

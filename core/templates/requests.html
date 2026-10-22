@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Food Requests | FoodBridge</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f8f6;
+            color: #26352d;
+        }
+
+        .navbar {
+            background: #245c3a;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 45px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #245c3a;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #6b756f;
+            font-size: 15px;
+        }
+
+        .request-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.07);
+            border: 1px solid #e8eee9;
+        }
+
+        .request-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .food-name {
+            color: #245c3a;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .status {
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .accepted {
+            background: #e4f3e9;
+            color: #247044;
+        }
+
+        .rejected {
+            background: #fde8e8;
+            color: #a33a3a;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .detail-box {
+            background: #f7faf8;
+            padding: 14px;
+            border-radius: 10px;
+        }
+
+        .label {
+            display: block;
+            color: #7a847e;
+            font-size: 12px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .value {
+            color: #29362f;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .request-id {
+            margin-top: 18px;
+            padding-top: 15px;
+            border-top: 1px solid #edf1ee;
+            color: #89928c;
+            font-size: 12px;
+        }
+
+        .empty {
+            background: white;
+            border: 1px solid #e8eee9;
+            border-radius: 16px;
+            padding: 55px 25px;
+            text-align: center;
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .empty h2 {
+            color: #245c3a;
+            margin-bottom: 8px;
+        }
+
+        .empty p {
+            color: #747d77;
+            font-size: 14px;
+        }
+
+        @media (max-width: 650px) {
+            .navbar {
+                padding: 16px 20px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .container {
+                margin: 30px auto;
+            }
+
+            .page-header h1 {
+                font-size: 26px;
+            }
+
+            .request-top {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="logo">🍃 FoodBridge</a>
+    <a href="{% url 'home' %}" class="back-link">← Back to Home</a>
+</nav>
+
+<div class="container">
+
+    <div class="page-header">
+        <h1>📋 My Food Requests</h1>
+        <p>Track the status of food donations you have requested.</p>
+    </div>
+
+    {% for request in requests %}
+
+        <div class="request-card">
+
+            <div class="request-top">
+
+                <div class="food-name">
+                    🍱 {{ request.food.food_name }}
+                </div>
+
+                {% if request.status == 'Pending' %}
+                    <span class="status pending">Pending</span>
+
+                {% elif request.status == 'Accepted' %}
+                    <span class="status accepted">Accepted</span>
+
+                {% elif request.status == 'Rejected' %}
+                    <span class="status rejected">Rejected</span>
+
+                {% else %}
+                    <span class="status pending">
+                        {{ request.status }}
+                    </span>
+                {% endif %}
+
+            </div>
+
+            <div class="details">
+
+                <div class="detail-box">
+                    <span class="label">Quantity</span>
+                    <span class="value">
+                        {{ request.food.quantity }}
+                    </span>
+                </div>
+
+                <div class="detail-box">
+                    <span class="label">Pickup Location</span>
+                    <span class="value">
+                        📍 {{ request.food.location }}
+                    </span>
+                </div>
+
+                <div class="detail-box">
+                    <span class="label">Donor Contact</span>
+                    <span class="value">
+                        📞 {{ request.food.contact }}
+                    </span>
+                </div>
+
+                <div class="detail-box">
+                    <span class="label">Requested On</span>
+                    <span class="value">
+                        {{ request.created_at|date:"d M Y, h:i A" }}
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="request-id">
+                Request ID: #{{ request.id }}
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <div class="empty">
+
+            <div class="empty-icon">📭</div>
+
+            <h2>No Food Requests</h2>
+
+            <p>
+                You haven't requested any food donations yet.
+            </p>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

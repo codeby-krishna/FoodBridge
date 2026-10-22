@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Donate Food | FoodBridge</title>
+
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --green-dark: #123c2a;
+            --green: #1f7a4d;
+            --green-light: #4caf78;
+            --cream: #f7f8f2;
+            --white: #ffffff;
+            --text: #26352d;
+            --muted: #718078;
+            --border: #e5ebe6;
+            --error: #c62828;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            width: 100%;
+            padding: 18px 7%;
+            background: rgba(255, 255, 255, 0.97);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--green);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .brand-name {
+            font-size: 23px;
+            font-weight: 800;
+            color: var(--green-dark);
+        }
+
+        .brand-name span {
+            color: var(--green);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            color: #4d5b54;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--green);
+        }
+
+        .nav-donate {
+            padding: 10px 17px;
+            background: var(--green);
+            color: white !important;
+            border-radius: 9px;
+        }
+
+        .nav-logout {
+            color: #c62828 !important;
+        }
+
+        /* PAGE */
+
+        .page {
+            min-height: calc(100vh - 80px);
+            padding: 65px 7% 80px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .donation-wrapper {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* PAGE HEADING */
+
+        .page-heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 7px 13px;
+            background: #e4f3e9;
+            color: var(--green);
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+        }
+
+        .page-heading h1 {
+            color: var(--green-dark);
+            font-size: clamp(36px, 5vw, 48px);
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+
+        .page-heading h1 span {
+            color: var(--green);
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            font-size: 16px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        /* FORM CARD */
+
+        .form-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 15px 45px rgba(23, 63, 42, 0.08);
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 25px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-header-icon {
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            background: #e7f4eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+        }
+
+        .form-header h2 {
+            color: var(--green-dark);
+            font-size: 22px;
+            margin-bottom: 2px;
+        }
+
+        .form-header p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* MAP */
+
+        .map-section {
+            margin-bottom: 28px;
+        }
+
+        .map-section label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .map-help {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        #food-map {
+            width: 100%;
+            height: 350px;
+            border-radius: 12px;
+            border: 1px solid #d7e5d8;
+            z-index: 1;
+            background: #e9efe9;
+        }
+
+        #map-status {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--muted);
+            overflow-wrap: anywhere;
+        }
+
+        .location-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .location-btn {
+            padding: 10px 15px;
+            border: 1px solid #d7e5d8;
+            background: #f5faf6;
+            color: var(--green-dark);
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .location-btn:hover {
+            background: #e4f3e9;
+        }
+
+        /* FORM GRID */
+
+        .form-fields {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #d7e5d8;
+            border-radius: 11px;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text);
+            outline: none;
+            background: #ffffff;
+            transition: 0.2s;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--green-light);
+            box-shadow: 0 0 0 3px rgba(67, 160, 71, 0.10);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #9aa7a0;
+        }
+
+        /* ERRORS */
+
+        .field-error {
+            color: var(--error);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .field-error ul {
+            list-style: none;
+        }
+
+        .form-error-summary {
+            padding: 13px 15px;
+            margin-bottom: 22px;
+            background: #fff0f0;
+            border: 1px solid #ffd0d0;
+            border-radius: 10px;
+            color: var(--error);
+            font-size: 13px;
+        }
+
+        .form-error-summary ul {
+            padding-left: 20px;
+        }
+
+        /* FORM FOOTER */
+
+        .form-actions {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .form-note {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .submit-btn {
+            border: none;
+            background: var(--green);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 11px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .submit-btn:hover {
+            background: #17633e;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(31, 122, 77, 0.20);
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 750px) {
+            .page {
+                padding: 50px 5% 60px;
+            }
+
+            .form-card {
+                padding: 30px;
+            }
+
+            .form-fields {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 14px 5%;
+            }
+
+            .brand-name {
+                font-size: 20px;
+            }
+
+            .brand-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 19px;
+            }
+
+            .nav-links {
+                gap: 7px;
+            }
+
+            .nav-links a:not(.nav-donate) {
+                display: none;
+            }
+
+            .nav-donate {
+                padding: 9px 13px;
+                font-size: 12px;
+            }
+
+            .page {
+                padding: 45px 5% 55px;
+            }
+
+            .page-heading {
+                margin-bottom: 25px;
+            }
+
+            .eyebrow {
+                font-size: 10px;
+                padding: 6px 11px;
+            }
+
+            .page-heading h1 {
+                font-size: 34px;
+            }
+
+            .page-heading p {
+                font-size: 14px;
+            }
+
+            .form-card {
+                padding: 23px 18px;
+                border-radius: 18px;
+            }
+
+            .form-header {
+                align-items: flex-start;
+                padding-bottom: 20px;
+                margin-bottom: 22px;
+            }
+
+            .form-header-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 22px;
+            }
+
+            .form-header h2 {
+                font-size: 19px;
+            }
+
+            .form-header p {
+                font-size: 12px;
+            }
+
+            .form-fields {
+                gap: 18px;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 12px 13px;
+                font-size: 14px;
+            }
+
+            #food-map {
+                height: 300px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .form-note {
+                text-align: center;
+                order: 2;
+            }
+
+            .submit-btn {
+                width: 100%;
+                padding: 14px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .page-heading h1 {
+                font-size: 30px;
+            }
+
+            .form-card {
+                padding: 20px 15px;
+            }
+
+            .form-header {
+                gap: 10px;
+            }
+
+            .form-header h2 {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="brand">
+            <div class="brand-icon">🍲</div>
+            <div class="brand-name">Food<span>Bridge</span></div>
+        </a>
+
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'find_food' %}">Find Food</a>
+            <a href="{% url 'food_requests' %}">Requests</a>
+            <a href="{% url 'add_food' %}" class="nav-donate">Donate Food</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="nav-logout">🚪 Logout</a>
+            {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- MAIN PAGE -->
+
+    <main class="page">
+        <div class="donation-wrapper">
+
+            <div class="page-heading">
+                <span class="eyebrow">🌱 Make a Difference</span>
+                <h1>Donate <span>Food</span></h1>
+
+                <p>
+                    Share your surplus food with someone in your community
+                    instead of letting it go to waste.
+                </p>
+            </div>
+
+            <div class="form-card">
+
+                <div class="form-header">
+                    <div class="form-header-icon">🍱</div>
+
+                    <div>
+                        <h2>Food Donation Details</h2>
+                        <p>Tell us a little about the food you want to share.</p>
+                    </div>
+                </div>
+
+                <form method="POST" id="donation-form">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="form-error-summary">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <!-- MAP SECTION -->
+
+                    <div class="map-section">
+                        <label>📍 Select Food Pickup Location</label>
+
+                        <p class="map-help">
+                            Map par click karke pickup location select karo.
+                            Marker ko drag karke bhi location adjust kar sakte ho.
+                        </p>
+
+                        <div id="food-map"></div>
+
+                        <div class="location-actions">
+                            <button type="button" class="location-btn" id="current-location-btn">
+                                📍 Use My Current Location
+                            </button>
+                        </div>
+
+                        <p id="map-status" aria-live="polite">
+                            Map load hone ka wait karo.
+                        </p>
+                    </div>
+
+                    <!-- FORM FIELDS -->
+
+                    <div class="form-fields">
+
+                        {% for field in form %}
+                        {% if field.name != 'latitude' and field.name != 'longitude' %}
+                        <div
+                            class="form-group {% if field.name == 'description' or field.name == 'location' %}full-width{% endif %}">
+
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                                {% if field.field.required %}<span aria-hidden="true">*</span>{% endif %}
+                            </label>
+
+                            {{ field }}
+
+                            {% if field.help_text %}
+                            <small class="map-help">{{ field.help_text }}</small>
+                            {% endif %}
+
+                            {% if field.errors %}
+                            <div class="field-error">
+                                {{ field.errors }}
+                            </div>
+                            {% endif %}
+
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+
+                    </div>
+
+                    <!-- FORM ACTIONS -->
+
+                    <div class="form-actions">
+                        <div class="form-note">
+                            ❤️ Every donation can make a difference.
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            🍱 Submit Donation
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </main>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("donation-form");
+            const mapStatus = document.getElementById("map-status");
+            const currentLocationBtn = document.getElementById("current-location-btn");
+            const mapElement = document.getElementById("food-map");
+
+            if (!form || !mapElement || typeof L === "undefined") {
+                console.error("FoodBridge map or form could not be loaded.");
+                if (mapStatus) {
+                    mapStatus.textContent = "Map load nahi hua. Page refresh karke try karo.";
+                }
+                return;
+            }
+
+            // Hidden coordinate fields
+            let latitudeInput = document.getElementById("id_latitude");
+            let longitudeInput = document.getElementById("id_longitude");
+
+            if (!latitudeInput) {
+                latitudeInput = document.createElement("input");
+                latitudeInput.type = "hidden";
+                latitudeInput.name = "latitude";
+                latitudeInput.id = "id_latitude";
+                form.appendChild(latitudeInput);
+            }
+
+            if (!longitudeInput) {
+                longitudeInput = document.createElement("input");
+                longitudeInput.type = "hidden";
+                longitudeInput.name = "longitude";
+                longitudeInput.id = "id_longitude";
+                form.appendChild(longitudeInput);
+            }
+
+            // Map initialization
+            const map = L.map("food-map").setView([28.6139, 77.2090], 12);
+
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution:
+                    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            let marker = null;
+
+            function setSelectedLocation(lat, lng) {
+                lat = Number(lat);
+                lng = Number(lng);
+
+                if (
+                    !Number.isFinite(lat) ||
+                    !Number.isFinite(lng) ||
+                    lat < -90 || lat > 90 ||
+                    lng < -180 || lng > 180
+                ) {
+                    mapStatus.textContent = "Invalid location. Map par dobara click karo.";
+                    mapStatus.style.color = "#c62828";
+                    return;
+                }
+
+                // Save coordinates into submitted form fields
+                latitudeInput.value = lat.toFixed(7);
+                longitudeInput.value = lng.toFixed(7);
+
+                if (!marker) {
+                    marker = L.marker([lat, lng], {
+                        draggable: true
+                    }).addTo(map);
+
+                    marker.on("dragend", function (event) {
+                        const position = event.target.getLatLng();
+                        setSelectedLocation(position.lat, position.lng);
+                    });
+                } else {
+                    marker.setLatLng([lat, lng]);
+                }
+
+                map.setView([lat, lng], 15);
+
+                mapStatus.textContent =
+                    "Location selected! Latitude: " +
+                    latitudeInput.value +
+                    ", Longitude: " +
+                    longitudeInput.value;
+
+                mapStatus.style.color = "#16803c";
+            }
+
+            // Select a location by clicking the map
+            map.on("click", function (event) {
+                setSelectedLocation(event.latlng.lat, event.latlng.lng);
+            });
+
+            // Use current location (browser permission required)
+            currentLocationBtn.addEventListener("click", function () {
+                if (!navigator.geolocation) {
+                    mapStatus.textContent =
+                        "Location detection supported nahi hai. Map par click karke location select karo.";
+                    mapStatus.style.color = "#c62828";
+                    return;
+                }
+
+                mapStatus.textContent = "Current location find ho rahi hai...";
+                mapStatus.style.color = "#555";
+
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        setSelectedLocation(
+                            position.coords.latitude,
+                            position.coords.longitude
+                        );
+                    },
+                    function (error) {
+                        let message = "Location nahi mil saki. Map par manually click karo.";
+
+                        if (error.code === 1) {
+                            message = "Location permission allow karo, ya map par manually click karo.";
+                        } else if (error.code === 3) {
+                            message = "Location request timeout ho gaya. Map par manually click karo.";
+                        }
+
+                        mapStatus.textContent = message;
+                        mapStatus.style.color = "#c62828";
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 15000,
+                        maximumAge: 0
+                    }
+                );
+            });
+
+            // Fix map dimensions after rendering
+            setTimeout(function () {
+                map.invalidateSize();
+            }, 300);
+
+            // Validate coordinates before submitting
+            form.addEventListener("submit", function (event) {
+                const lat = latitudeInput.value.trim();
+                const lng = longitudeInput.value.trim();
+
+                if (lat === "" || lng === "") {
+                    event.preventDefault();
+
+                    mapStatus.textContent =
+                        "Food submit karne se pehle map par pickup location select karo.";
+                    mapStatus.style.color = "#c62828";
+
+                    mapElement.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+
+                    return;
+                }
+
+                // Confirm coordinates are included in the form submission
+                console.log("FoodBridge coordinates:", {
+                    latitude: lat,
+                    longitude: lng
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

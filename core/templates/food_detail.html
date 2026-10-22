@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ food.food_name }} | FoodBridge</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5faf5;
+            color: #263238;
+        }
+
+        /* Navbar */
+
+        .navbar {
+            background: #2e7d32;
+            color: white;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 15px;
+        }
+
+        /* Main */
+
+        .container {
+            max-width: 950px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            text-decoration: none;
+            color: #2e7d32;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        /* Detail Card */
+
+        .detail-card {
+            background: white;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.09);
+        }
+
+        .food-banner {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            position: relative;
+        }
+
+        .available-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 8px 14px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .detail-content {
+            padding: 35px;
+        }
+
+        .food-title {
+            color: #1b5e20;
+            font-size: 34px;
+            margin-bottom: 25px;
+        }
+
+        /* Information */
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .info-box {
+            background: #f5faf5;
+            padding: 17px;
+            border-radius: 12px;
+        }
+
+        .info-label {
+            display: block;
+            color: #78909c;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .info-value {
+            color: #263238;
+            font-weight: bold;
+        }
+
+        /* Description */
+
+        .description-box {
+            margin-top: 25px;
+            padding: 22px;
+            background: #fafdfb;
+            border-left: 4px solid #43a047;
+            border-radius: 8px;
+        }
+
+        .description-box h3 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .description-box p {
+            color: #607d68;
+            line-height: 1.7;
+        }
+
+        /* Buttons */
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .request-btn {
+            flex: 1;
+            border: none;
+            background: #2e7d32;
+            color: white;
+            padding: 15px;
+            border-radius: 11px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .request-status {
+            width: 100%;
+            padding: 15px;
+            border-radius: 11px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            border: 1px solid #c8e6c9;
+        }
+
+        .request-btn:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+        }
+
+        .back-btn {
+            text-decoration: none;
+            text-align: center;
+            background: #eef3ef;
+            color: #455a64;
+            padding: 15px 25px;
+            border-radius: 11px;
+            font-weight: bold;
+        }
+
+        /* Footer */
+
+        footer {
+            background: #1b5e20;
+            color: white;
+            text-align: center;
+            padding: 22px;
+            margin-top: 80px;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 18px 5%;
+            }
+
+            .nav-link {
+                display: none;
+            }
+
+            .container {
+                margin: 35px auto;
+            }
+
+            .food-title {
+                font-size: 27px;
+            }
+
+            .detail-content {
+                padding: 25px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🍲 FoodBridge
+        </div>
+
+        <div>
+
+            <a href="{% url 'home' %}" class="nav-link">
+                Home
+            </a>
+
+            <a href="{% url 'find_food' %}" class="nav-link">
+                Find Food
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Main -->
+
+    <main class="container">
+
+        <a href="{% url 'find_food' %}" class="back-link">
+            ← Back to Food
+        </a>
+
+
+        <div class="detail-card">
+
+
+            <!-- Food Banner -->
+
+            <div class="food-banner">
+
+                <span class="available-badge">
+                    🟢 Available
+                </span>
+
+                🍱
+
+            </div>
+
+
+            <!-- Content -->
+
+            <div class="detail-content">
+
+                <h1 class="food-title">
+                    {{ food.food_name }}
+                </h1>
+
+
+                <!-- Food Information -->
+
+                <div class="info-grid">
+
+                    <div class="info-box">
+
+                        <span class="info-label">
+                            🍽️ Quantity
+                        </span>
+
+                        <span class="info-value">
+                            {{ food.quantity }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <span class="info-label">
+                            📍 Location
+                        </span>
+
+                        <span class="info-value">
+                            {{ food.location }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <span class="info-label">
+                            📞 Contact
+                        </span>
+
+                        <span class="info-value">
+                            {{ food.contact }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <span class="info-label">
+                            🕐 Added
+                        </span>
+
+                        <span class="info-value">
+                            {{ food.created_at|date:"d M Y, h:i A" }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div class="description-box">
+
+                    <h3>
+                        📝 About this Food
+                    </h3>
+
+                    <p>
+                        {{ food.description }}
+                    </p>
+
+                </div>
+
+
+                <!-- Actions -->
+
+                <div class="actions">
+
+                    {% if not user.is_authenticated %}
+
+                    <a href="{% url 'login' %}" class="request-btn" style="text-decoration:none; text-align:center;">
+                        🔐 Login to Claim Food
+                    </a>
+
+                    {% elif ngo_profile_exists %}
+
+                    {% if already_requested %}
+
+                    <div class="request-status">
+                        ✓ Food Claim Already Sent
+                    </div>
+
+                    {% else %}
+
+
+                    <form method="post" action="{% url 'request_food' food.id %}" style="flex:1;">
+                        {% csrf_token %}
+
+                        <label for="requested_quantity">
+                            Kitni quantity chahiye? (Available: {{ food.remaining_quantity }} {{ food.quantity_unit }})
+                        </label>
+
+                        <input type="number" name="requested_quantity" id="requested_quantity" min="0.01"
+                            max="{{ food.remaining_quantity }}" step="0.01" value="1" required
+                            style="width:100%; padding:12px; margin:10px 0;">
+
+                        <button type="submit" class="request-btn">
+                            🤝 Request Food
+                        </button>
+                    </form>
+
+
+                    {% endif %}
+
+                    {% elif is_donor %}
+
+                    <div class="request-status">
+                        🍲 You are the donor of this food
+                    </div>
+
+                    {% else %}
+
+                    <div class="request-status">
+                        👀 You can view this food, but only NGOs can claim it.
+                    </div>
+
+                    {% endif %}
+
+                    <a href="{% url 'find_food' %}" class="back-btn">
+                        Back
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+
+    <footer>
+
+        © 2026 FoodBridge | Sharing Food, Spreading Hope ❤️
+
+    </footer>
+
+</body>
+
+</html>

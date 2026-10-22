@@ -1,0 +1,462 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | FoodBridge</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7f2;
+            color: #26352c;
+        }
+
+        .navbar {
+            background: white;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: bold;
+            color: #245c3a;
+            text-decoration: none;
+        }
+
+        .brand span {
+            color: #4caf50;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #405047;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: #245c3a;
+        }
+
+        .logout {
+            background: #245c3a;
+            color: white !important;
+            padding: 9px 16px;
+            border-radius: 8px;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: auto;
+            padding: 50px 6%;
+        }
+
+        .welcome {
+            margin-bottom: 35px;
+        }
+
+        .eyebrow {
+            color: #4caf50;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .welcome h1 {
+            margin-top: 8px;
+            font-size: 38px;
+            color: #245c3a;
+        }
+
+        .welcome h1 span {
+            color: #4caf50;
+        }
+
+        .welcome p {
+            margin-top: 10px;
+            color: #68756d;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            font-size: 21px;
+            color: #245c3a;
+            margin-bottom: 18px;
+        }
+
+        .stats-grid,
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 38px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.06);
+            border: 1px solid #edf1ec;
+            transition: .2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,.09);
+        }
+
+        .icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: #eaf5ec;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 18px;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #245c3a;
+        }
+
+        .stat-label {
+            margin-top: 6px;
+            color: #68756d;
+            font-size: 14px;
+        }
+
+        .action-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid #edf1ec;
+            box-shadow: 0 5px 20px rgba(0,0,0,.05);
+            transition: .2s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            border-color: #b8d8be;
+        }
+
+        .action-card h3 {
+            color: #245c3a;
+            margin-bottom: 7px;
+        }
+
+        .action-card p {
+            color: #718078;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .action-arrow {
+            display: block;
+            margin-top: 15px;
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #245c3a, #34764d);
+            color: white;
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h2 {
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #e5f2e8;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #7b887f;
+            font-size: 13px;
+        }
+
+        @media (max-width: 800px) {
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a:not(.logout) {
+                display: none;
+            }
+
+            .welcome h1 {
+                font-size: 30px;
+            }
+
+            .stats-grid,
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard {
+                padding: 35px 5%;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .navbar {
+                padding: 16px 5%;
+            }
+
+            .brand {
+                font-size: 21px;
+            }
+
+            .welcome h1 {
+                font-size: 27px;
+            }
+
+            .stat-card,
+            .action-card {
+                padding: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="brand">
+        Food<span>Bridge</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+
+        {% if is_ngo %}
+            <a href="{% url 'find_food' %}">Find Food</a>
+            <a href="{% url 'ngo_requests' %}">My Requests</a>
+        {% elif is_donor %}
+            <a href="{% url 'donor_requests' %}">Donor Requests</a>
+            <a href="{% url 'add_food' %}">Donate</a>
+        {% elif is_volunteer %}
+            <a href="{% url 'my_pickups' %}">My Pickups</a>
+            <a href="{% url 'volunteer_pickups' %}">Available Pickups</a>
+        {% else %}
+            <a href="{% url 'find_food' %}">Find Food</a>
+        {% endif %}
+
+        <a href="{% url 'logout' %}" class="logout">Logout</a>
+    </div>
+</nav>
+
+<main class="dashboard">
+
+    <section class="welcome">
+        <div class="eyebrow">FoodBridge Dashboard</div>
+
+        <h1>
+            Welcome, <span>{{ user.username }}</span> 👋
+        </h1>
+
+        <p>
+            Manage your FoodBridge activities from one place.
+        </p>
+    </section>
+
+    <!-- DONOR SECTION -->
+    {% if is_donor and not is_ngo %}
+
+        <h2 class="section-title">🍱 Donation Overview</h2>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">🍱</div>
+                <div class="stat-number">{{ donated_foods_count }}</div>
+                <div class="stat-label">Food Donations</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">📋</div>
+                <div class="stat-number">{{ received_requests_count }}</div>
+                <div class="stat-label">Received Requests</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">✅</div>
+                <div class="stat-number">{{ accepted_received_count }}</div>
+                <div class="stat-label">Accepted Requests</div>
+            </div>
+        </div>
+
+    {% endif %}
+
+    <!-- NGO SECTION -->
+    {% if is_ngo %}
+
+        <h2 class="section-title">🤝 NGO Activity</h2>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">📋</div>
+                <div class="stat-number">{{ ngo_requests_count }}</div>
+                <div class="stat-label">My Food Requests</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">🟡</div>
+                <div class="stat-number">{{ pending_ngo_count }}</div>
+                <div class="stat-label">Pending Requests</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">🟢</div>
+                <div class="stat-number">{{ accepted_ngo_count }}</div>
+                <div class="stat-label">Accepted Requests</div>
+            </div>
+        </div>
+
+    {% endif %}
+
+    <!-- VOLUNTEER SECTION -->
+    {% if is_volunteer and not is_ngo and not is_donor %}
+
+        <h2 class="section-title">🚚 Volunteer Activity</h2>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">📦</div>
+                <div class="stat-number">{{ my_pickups_count }}</div>
+                <div class="stat-label">My Pickups</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">🚚</div>
+                <div class="stat-number">{{ assigned_pickups_count }}</div>
+                <div class="stat-label">Assigned Pickups</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">🎉</div>
+                <div class="stat-number">{{ completed_pickups_count }}</div>
+                <div class="stat-label">Completed Pickups</div>
+            </div>
+        </div>
+
+    {% endif %}
+
+    <!-- QUICK ACTIONS -->
+    <h2 class="section-title">⚡ Quick Actions</h2>
+
+    <div class="actions-grid">
+
+        {% if is_donor and not is_ngo %}
+
+            <a href="{% url 'add_food' %}" class="action-card">
+                <h3>🍱 Donate Food</h3>
+                <p>Share surplus food with people and organizations that need it.</p>
+                <span class="action-arrow">Donate Now →</span>
+            </a>
+
+            <a href="{% url 'donor_requests' %}" class="action-card">
+                <h3>📋 Donor Requests</h3>
+                <p>Review and manage requests for your donated food.</p>
+                <span class="action-arrow">Review Requests →</span>
+            </a>
+
+        {% elif is_ngo %}
+
+            <a href="{% url 'find_food' %}" class="action-card">
+                <h3>🔎 Find Food</h3>
+                <p>Browse available food donations for your organization.</p>
+                <span class="action-arrow">Browse Food →</span>
+            </a>
+
+            <a href="{% url 'ngo_requests' %}" class="action-card">
+                <h3>🤝 My Food Requests</h3>
+                <p>Track the status of your organization's food requests.</p>
+                <span class="action-arrow">View Requests →</span>
+            </a>
+
+        {% elif is_volunteer %}
+
+            <a href="{% url 'volunteer_pickups' %}" class="action-card">
+                <h3>🚚 Available Pickups</h3>
+                <p>Find pending food deliveries that need a volunteer.</p>
+                <span class="action-arrow">View Pickups →</span>
+            </a>
+
+            <a href="{% url 'my_pickups' %}" class="action-card">
+                <h3>📦 My Pickups</h3>
+                <p>Track assigned deliveries and verify them with an OTP.</p>
+                <span class="action-arrow">Track Pickups →</span>
+            </a>
+
+        {% else %}
+
+            <a href="{% url 'find_food' %}" class="action-card">
+                <h3>🔎 Find Food</h3>
+                <p>Browse available food donations.</p>
+                <span class="action-arrow">Browse Food →</span>
+            </a>
+
+            <a href="{% url 'add_food' %}" class="action-card">
+                <h3>🍱 Donate Food</h3>
+                <p>Share surplus food with people who need it.</p>
+                <span class="action-arrow">Donate Now →</span>
+            </a>
+
+        {% endif %}
+
+    </div>
+
+    <div class="info-box">
+        <h2>🌱 Every Contribution Matters</h2>
+        <p>
+            FoodBridge connects donors, NGOs and volunteers to reduce
+            food waste and help communities. Keep making a difference,
+            one meal at a time.
+        </p>
+    </div>
+
+</main>
+
+<footer>
+    © 2026 FoodBridge · Connecting Food With People
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FoodBridge | Share Food. Share Hope.</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --green-dark: #123c2a;
+            --green: #1f7a4d;
+            --green-light: #4caf78;
+            --cream: #f7f8f2;
+            --white: #ffffff;
+            --text: #26352d;
+            --muted: #718078;
+            --border: #e5ebe6;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            width: 100%;
+            padding: 17px 7%;
+            background: rgba(255, 255, 255, 0.97);
+            border-bottom: 1px solid var(--border);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--green);
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 22px;
+        }
+
+        .brand-name {
+            font-size: 23px;
+            font-weight: 800;
+            color: var(--green-dark);
+        }
+
+        .brand-name span {
+            color: var(--green);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .nav-links a {
+            color: #4d5b54;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            color: var(--green);
+        }
+
+        .nav-donate {
+            padding: 10px 17px;
+            background: var(--green);
+            color: white !important;
+            border-radius: 9px;
+        }
+
+        .nav-donate:hover {
+            background: #17633e;
+        }
+
+        .nav-login {
+            padding: 9px 15px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+        }
+
+        .nav-logout {
+            color: #b33a3a !important;
+        }
+
+        .nav-logout:hover {
+            color: #8d2020 !important;
+        }
+
+        /* HERO */
+
+        .hero {
+            padding: 80px 7% 70px;
+
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            align-items: center;
+            gap: 70px;
+
+            background:
+                radial-gradient(circle at 85% 20%,
+                    #dcefe3 0,
+                    transparent 30%),
+                var(--cream);
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 30px;
+            background: #e4f3e9;
+            color: var(--green);
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 6vw, 72px);
+            line-height: 1.05;
+            letter-spacing: -2px;
+            color: var(--green-dark);
+            margin-bottom: 24px;
+        }
+
+        .hero h1 span {
+            color: var(--green);
+        }
+
+        .hero-text {
+            max-width: 650px;
+        }
+
+        .hero-text p {
+            color: var(--muted);
+            font-size: 18px;
+            max-width: 590px;
+            margin-bottom: 32px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 23px;
+            border-radius: 10px;
+            font-weight: 700;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            transition: 0.25s;
+        }
+
+        .btn-primary {
+            background: var(--green);
+            color: white;
+            box-shadow: 0 8px 20px rgba(31, 122, 77, 0.20);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: #17633e;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--green-dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            border-color: var(--green-light);
+        }
+
+
+        /* HERO VISUAL - FIXED PROFESSIONAL LAYOUT */
+
+        .hero-visual {
+            position: relative;
+            min-height: 460px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .main-card {
+            width: 360px;
+            min-height: 390px;
+            padding: 35px;
+            border-radius: 28px;
+            background: white;
+            box-shadow: 0 25px 60px rgba(23, 63, 42, 0.13);
+            position: relative;
+            z-index: 2;
+        }
+
+        .food-icon {
+            width: 85px;
+            height: 85px;
+            border-radius: 22px;
+            background: #e7f4eb;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 46px;
+            margin-bottom: 22px;
+        }
+
+        .main-card h3 {
+            font-size: 25px;
+            color: var(--green-dark);
+            margin-bottom: 10px;
+        }
+
+        .main-card p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .availability {
+            margin-top: 35px;
+            padding-top: 22px;
+            border-top: 1px solid var(--border);
+
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .availability>div {
+            flex: 1;
+        }
+
+        .availability strong {
+            display: block;
+            color: var(--green-dark);
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+
+        .availability small {
+            color: var(--muted);
+        }
+
+        /* FLOATING CARDS */
+
+        .floating {
+            position: absolute;
+            padding: 13px 18px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
+
+            font-weight: 700;
+            font-size: 13px;
+            white-space: nowrap;
+            z-index: 4;
+        }
+
+        /* Reduce Food Waste */
+
+        .floating.one {
+            top: 45px;
+            right: -5px;
+        }
+
+        /* Share Connect Help */
+
+        .floating.two {
+            bottom: 45px;
+            left: -10px;
+        }
+
+        /* FLOATING CARDS */
+
+        .floating {
+            position: absolute;
+
+            padding: 13px 17px;
+
+            background: white;
+            border-radius: 14px;
+
+            box-shadow:
+                0 12px 30px rgba(0, 0, 0, 0.10);
+
+            font-weight: 700;
+            font-size: 13px;
+
+            z-index: 3;
+            white-space: nowrap;
+        }
+
+        .floating.one {
+            top: 38px;
+            right: 0;
+        }
+
+        .floating.two {
+            bottom: 38px;
+            left: 0;
+        }
+
+        /* STATS */
+
+        .stats {
+            padding: 28px 7%;
+            background: white;
+
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .stat {
+            text-align: center;
+            padding: 10px;
+
+            border-right: 1px solid var(--border);
+        }
+
+        .stat:last-child {
+            border-right: none;
+        }
+
+        .stat h2 {
+            color: var(--green);
+            font-size: 28px;
+        }
+
+        .stat p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+
+        /* SECTION */
+
+        .section {
+            padding: 90px 7%;
+        }
+
+        .section-heading {
+            text-align: center;
+            max-width: 650px;
+            margin: auto auto 45px;
+        }
+
+        .section-heading span {
+            color: var(--green);
+            font-size: 13px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .section-heading h2 {
+            color: var(--green-dark);
+            font-size: 38px;
+            margin: 8px 0 12px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+        }
+
+
+        /* HOW IT WORKS */
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .step {
+            background: white;
+
+            border: 1px solid var(--border);
+            border-radius: 18px;
+
+            padding: 30px;
+
+            transition: 0.25s;
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 15px 35px rgba(0, 0, 0, 0.07);
+        }
+
+        .step-number {
+            width: 45px;
+            height: 45px;
+            border-radius: 13px;
+
+            background: #e7f4eb;
+            color: var(--green);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .step h3 {
+            color: var(--green-dark);
+            margin-bottom: 10px;
+        }
+
+        .step p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+
+        /* CTA */
+
+        .cta {
+            margin: 0 7% 80px;
+
+            padding: 55px;
+
+            border-radius: 25px;
+
+            background: var(--green-dark);
+            color: white;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 30px;
+        }
+
+        .cta h2 {
+            font-size: 34px;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        .cta p {
+            color: #c8d8cf;
+            max-width: 550px;
+        }
+
+        .cta .btn {
+            background: white;
+            color: var(--green-dark);
+            white-space: nowrap;
+        }
+
+
+        /* FOOTER */
+
+        footer {
+            background: #0c2b1d;
+            color: #a9bbb1;
+
+            padding: 35px 7%;
+
+            text-align: center;
+        }
+
+        footer strong {
+            color: white;
+        }
+
+
+        /* TABLET */
+
+        @media (max-width: 1050px) {
+
+            .nav-links {
+                gap: 14px;
+            }
+
+            .nav-links a {
+                font-size: 13px;
+            }
+
+            .hero {
+                gap: 40px;
+            }
+
+        }
+
+
+        /* MOBILE RESPONSIVE FIX */
+
+        @media (max-width: 900px) {
+
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 65px 7% 60px;
+                text-align: center;
+            }
+
+            .hero-text {
+                max-width: 700px;
+                margin: auto;
+            }
+
+            .hero-text p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-visual {
+                min-height: 430px;
+                width: 100%;
+                padding: 25px;
+            }
+
+            .main-card {
+                width: 350px;
+                max-width: 85%;
+            }
+
+            .floating.one {
+                top: 25px;
+                right: 2%;
+            }
+
+            .floating.two {
+                bottom: 25px;
+                left: 2%;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stat:nth-child(2) {
+                border-right: none;
+            }
+
+            .stat:nth-child(3),
+            .stat:nth-child(4) {
+                border-top: 1px solid var(--border);
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+                margin: auto;
+            }
+
+            .cta {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+
+        /* SMALL MOBILE */
+
+        @media (max-width: 650px) {
+
+            .navbar {
+                padding: 15px 5%;
+            }
+
+            .brand-name {
+                font-size: 20px;
+            }
+
+            .brand-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 19px;
+            }
+
+            .nav-links {
+                gap: 8px;
+            }
+
+            .nav-links a:not(.nav-donate) {
+                display: none;
+            }
+
+            .nav-donate {
+                padding: 9px 13px;
+                font-size: 13px;
+            }
+
+            .hero {
+                padding: 55px 5% 50px;
+                gap: 25px;
+            }
+
+            .hero h1 {
+                font-size: 43px;
+                line-height: 1.08;
+                letter-spacing: -1px;
+            }
+
+            .hero-text p {
+                font-size: 16px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .hero-buttons .btn {
+                justify-content: center;
+            }
+
+            .hero-visual {
+                min-height: 410px;
+                padding: 15px 5px;
+            }
+
+            .main-card {
+                width: 290px;
+                max-width: 82%;
+                min-height: 340px;
+                padding: 27px;
+                border-radius: 23px;
+            }
+
+            .food-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 38px;
+                margin-bottom: 18px;
+            }
+
+            .main-card h3 {
+                font-size: 21px;
+            }
+
+            .main-card p {
+                font-size: 13px;
+            }
+
+            .availability {
+                margin-top: 25px;
+                padding-top: 18px;
+                gap: 15px;
+            }
+
+            .availability strong {
+                font-size: 18px;
+            }
+
+            .availability small {
+                font-size: 11px;
+            }
+
+            /* Floating cards mobile */
+
+            .floating {
+                padding: 10px 12px;
+                font-size: 11px;
+                border-radius: 11px;
+                white-space: nowrap;
+            }
+
+            .floating.one {
+                top: 5px;
+                right: 0;
+            }
+
+            .floating.two {
+                bottom: 5px;
+                left: 0;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stat {
+                padding: 15px 8px;
+            }
+
+            .stat h2 {
+                font-size: 24px;
+            }
+
+            .stat p {
+                font-size: 11px;
+            }
+
+            .section {
+                padding: 60px 5%;
+            }
+
+            .section-heading h2 {
+                font-size: 29px;
+            }
+
+            .cta {
+                margin: 0 5% 50px;
+                padding: 32px 22px;
+            }
+
+            .cta h2 {
+                font-size: 26px;
+            }
+
+            footer {
+                padding: 30px 5%;
+                font-size: 13px;
+            }
+        }
+
+
+        /* EXTRA SMALL PHONES */
+
+        @media (max-width: 380px) {
+
+            .hero h1 {
+                font-size: 37px;
+            }
+
+            .hero-visual {
+                min-height: 390px;
+            }
+
+            .main-card {
+                width: 270px;
+                max-width: 78%;
+                padding: 23px;
+            }
+
+            .floating {
+                font-size: 10px;
+                padding: 9px 10px;
+            }
+
+            .floating.one {
+                right: -2px;
+            }
+
+            .floating.two {
+                left: -2px;
+            }
+        }
+
+
+        /* MOBILE NAVBAR */
+
+        @media (max-width: 650px) {
+
+            .navbar {
+                flex-direction: row !important;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .brand {
+                width: auto !important;
+            }
+
+            .menu-toggle {
+                display: block !important;
+                background: none;
+                border: none;
+                font-size: 28px;
+                cursor: pointer;
+                color: var(--green-dark);
+            }
+
+            .nav-links {
+                display: none !important;
+            }
+
+            .nav-links.active {
+                display: flex !important;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 8px 5%;
+                flex-direction: column;
+                gap: 2px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+                z-index: 1000;
+            }
+
+            .nav-links.active a {
+                display: block !important;
+                text-align: center;
+                padding: 6px;
+            }
+        }
+
+        /* HAMBURGER MENU */
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--green-dark);
+        }
+
+        /* FINAL MOBILE NAVBAR */
+
+        @media (max-width: 650px) {
+
+            .navbar {
+                position: sticky;
+                top: 0;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 5%;
+            }
+
+            .brand {
+                width: auto;
+            }
+
+            .menu-toggle {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 28px;
+                cursor: pointer;
+                color: var(--green-dark);
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .nav-links.active {
+                display: flex;
+
+                position: absolute;
+                top: 100%;
+                left: 0;
+
+                width: 100%;
+
+                background: white;
+                padding: 15px 5%;
+
+                flex-direction: column;
+                gap: 8px;
+
+                border-bottom: 1px solid var(--border);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+
+                z-index: 9999;
+            }
+
+            .nav-links.active a {
+                display: block;
+                width: 100%;
+                text-align: center;
+                padding: 10px;
+            }
+
+            .nav-links.active .nav-donate {
+                margin-top: 3px;
+            }
+
+            .nav-links.active .nav-logout {
+                color: #b33a3a !important;
+                background: #fff5f5;
+                border-radius: 9px;
+            }
+
+            .nav-links.active .nav-login {
+                border: 1px solid var(--border);
+                border-radius: 9px;
+            }
+        }
+    </style>
+
+</head>
+
+<script>
+    function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+    }
+</script>
+
+<body>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div style="padding: 12px; margin: 10px; border-radius: 8px; background: #d4edda; color: #155724;">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <a href="{% url 'home' %}" class="brand">
+            <div class="brand-icon">🍲</div>
+            <div class="brand-name">Food<span>Bridge</span></div>
+        </a>
+
+        <!-- Hamburger -->
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+        <div class="nav-links" id="navLinks">
+
+            <a href="{% url 'home' %}">🏠 Home</a>
+
+            <a href="{% url 'dashboard' %}">📊 Dashboard</a>
+
+            <a href="{% url 'find_food' %}">🔎 Find Food</a>
+
+            {% if user.is_authenticated %}
+            {% if is_ngo %}
+            <a href="{% url 'ngo_requests' %}">📋 NGO Requests</a>
+            {% elif is_donor %}
+            <a href="{% url 'donor_requests' %}">📋 Donor Requests</a>
+            {% else %}
+            <a href="{% url 'food_requests' %}">📋 Requests</a>
+            {% endif %}
+            {% endif %}
+
+            {% if is_volunteer and not is_ngo and not is_donor %}
+            <a href="{% url 'my_pickups' %}">🚴 My Pickups</a>
+            {% endif %}
+
+            {% if is_volunteer and not is_ngo and not is_donor %}
+            <a href="{% url 'volunteer_pickups' %}">📦 Available Pickups</a>
+            {% endif %}
+
+            {% if is_donor %}
+            <a href="{% url 'add_food' %}" class="nav-donate">
+                🍲 Donate Food
+            </a>
+            {% endif %}
+
+            {% if is_ngo %}
+            <a href="{% url 'ngo_profile' %}" class="nav-ngo">
+                🏢 NGO Profile
+            </a>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="nav-logout">
+                👋 Logout
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}" class="nav-login">
+                🔐 Login
+            </a>
+            <a href="{% url 'register' %}">
+                📝 Register
+            </a>
+            {% endif %}
+
+        </div>
+    </nav>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="hero-text">
+
+            <span class="eyebrow">
+                🌱 Fighting food waste together
+            </span>
+
+            <h1>
+                Good food<br>
+                should never go
+                <span>to waste.</span>
+            </h1>
+
+            <p>
+                FoodBridge connects people and communities with surplus food,
+                making it easier to donate extra meals and help someone nearby.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="{% url 'add_food' %}" class="btn btn-primary">
+                    🍱 Donate Food
+                </a>
+
+                <a href="{% url 'find_food' %}" class="btn btn-secondary">
+                    🔎 Find Food
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="hero-visual">
+
+            <div class="floating one">
+                ♻️ Reduce Food Waste
+            </div>
+
+            <div class="main-card">
+
+                <div class="food-icon">
+                    🍲
+                </div>
+
+                <h3>
+                    Fresh food. Real impact.
+                </h3>
+
+                <p>
+                    Every meal shared is one less meal wasted.
+                </p>
+
+                <div class="availability">
+
+                    <div>
+                        <strong>24/7</strong>
+                        <small>Community</small>
+                    </div>
+
+                    <div>
+                        <strong>100%</strong>
+                        <small>Purpose</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="floating two">
+                ❤️ Share • Connect • Help
+            </div>
+
+        </div>
+
+    </section>
+    <!-- IMPACT STATS -->
+
+    <section class="stats">
+
+        <div class="stat">
+            <h2>🍱</h2>
+            <p>Food Donations</p>
+        </div>
+
+        <div class="stat">
+            <h2>🤝</h2>
+            <p>Community Requests</p>
+        </div>
+
+        <div class="stat">
+            <h2>♻️</h2>
+            <p>Food Waste Reduced</p>
+        </div>
+
+        <div class="stat">
+            <h2>❤️</h2>
+            <p>Helping Communities</p>
+        </div>
+
+    </section>
+
+
+    <!-- HOW IT WORKS -->
+
+    <section class="section">
+
+        <div class="section-heading">
+
+            <span>Simple process</span>
+
+            <h2>How FoodBridge works</h2>
+
+            <p>
+                A simple connection between surplus food and people who need it.
+            </p>
+
+        </div>
+
+
+        <div class="steps">
+
+            <div class="step">
+
+                <div class="step-number">
+                    01
+                </div>
+
+                <h3>Donate</h3>
+
+                <p>
+                    Have extra food? Share its details with the FoodBridge
+                    community in just a few clicks.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    02
+                </div>
+
+                <h3>Discover</h3>
+
+                <p>
+                    Browse available food and find something suitable near
+                    your location.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    03
+                </div>
+
+                <h3>Connect</h3>
+
+                <p>
+                    Request the food, connect with the donor and turn surplus
+                    into meaningful help.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CTA -->
+
+    <section class="cta">
+
+        <div>
+
+            <h2>
+                Have extra food today?
+            </h2>
+
+            <p>
+                Someone in your community might need it.
+                Share it instead of letting it go to waste.
+            </p>
+
+        </div>
+
+        <a href="{% url 'add_food' %}" class="btn">
+            🍱 Donate Food
+        </a>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <strong>FoodBridge</strong>
+        — Connecting surplus food with people who need it.
+
+        <br>
+        <br>
+
+        © 2026 FoodBridge. Built for a better community. ❤️
+
+    </footer>
+
+
+</body>
+
+</html>
