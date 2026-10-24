@@ -12,9 +12,8 @@ from decimal import Decimal, InvalidOperation
 from django.db.models import Sum
 import secrets
 import math
-
 from .forms import FoodForm, NGOProfileForm
-from .models import Food, FoodRequest, NGOProfile, Pickup
+from .models import Food, FoodRequest, NGOProfile, Pickup, UserProfile
 
 
 # --------------------------------------------------
@@ -143,20 +142,11 @@ def logout_user(request):
 # ROLE HELPERS
 # --------------------------------------------------
 
+
 def is_volunteer_user(user):
-    from .models import UserProfile
+    profile = UserProfile.objects.filter(user=user).first()
+    return profile is not None and profile.role == "Volunteer"
 
-    profile = UserProfile.objects.filter(
-        user=user
-    ).first()
-
-    if profile:
-        return profile.role == "Volunteer"
-
-    is_ngo = NGOProfile.objects.filter(user=user).exists()
-    is_donor = Food.objects.filter(donor=user).exists()
-
-    return not is_ngo and not is_donor
 
 
 # --------------------------------------------------
@@ -804,55 +794,46 @@ def complete_pickup(request, id):
 # DASHBOARD
 # --------------------------------------------------
 
+
 @login_required
 def dashboard(request):
     user = request.user
 
-    ngo_profile = NGOProfile.objects.filter(
-        user=user
-    ).first()
+    # User ka saved role profile se lo
+    user_profile = UserProfile.objects.filter(user=user).first()
+    saved_role = user_profile.role if user_profile else None
 
-    is_ngo = ngo_profile is not None
-    is_donor = Food.objects.filter(donor=user).exists()
-    is_volunteer = is_volunteer_user(user)
+    # NGO profile
+    ngo_profile = NGOProfile.objects.filter(user=user).first()
 
+    # Role identify karo
+    is_ngo = saved_role == "NGO" or ngo_profile is not None
+    is_donor = saved_role == "Donor"
+    is_volunteer = saved_role == "Volunteer" or is_volunteer_user(user)
+
+    # Donor activity
     donated_foods = Food.objects.filter(donor=user)
 
-    received_requests = FoodRequest.objects.filter(
-        food__donor=user
-    )
-
+    received_requests = FoodRequest.objects.filter(food__donor=user)
     accepted_received_requests = received_requests.filter(
         status="Accepted"
     )
 
+    # NGO activity
     ngo_request_list = FoodRequest.objects.none()
 
-    if is_ngo:
-        ngo_request_list = FoodRequest.objects.filter(
-            ngo=ngo_profile
-        )
+    if ngo_profile:
+        ngo_request_list = FoodRequest.objects.filter(ngo=ngo_profile)
 
-    pending_ngo_requests = ngo_request_list.filter(
-        status="Pending"
-    )
+    pending_ngo_requests = ngo_request_list.filter(status="Pending")
+    accepted_ngo_requests = ngo_request_list.filter(status="Accepted")
 
-    accepted_ngo_requests = ngo_request_list.filter(
-        status="Accepted"
-    )
+    # Volunteer activity
+    my_pickup_list = Pickup.objects.filter(volunteer=user)
+    assigned_pickups = my_pickup_list.filter(status="Assigned")
+    completed_pickups = my_pickup_list.filter(status="Completed")
 
-    my_pickup_list = Pickup.objects.filter(
-        volunteer=user
-    )
-
-    assigned_pickups = my_pickup_list.filter(
-        status="Assigned"
-    )
-
-    completed_pickups = my_pickup_list.filter(
-        status="Completed"
-    )
-
+    # Dashboard role
     if is_ngo:
         role = "ngo"
     elif is_donor:
@@ -884,3 +865,4 @@ def dashboard(request):
     }
 
     return render(request, "dashboard.html", context)
+
