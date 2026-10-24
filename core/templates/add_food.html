@@ -4,10 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Donate Food | FoodBridge</title>
 
-    <!-- Leaflet Map CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
     <style>
@@ -22,7 +20,6 @@
             --green: #1f7a4d;
             --green-light: #4caf78;
             --cream: #f7f8f2;
-            --white: #ffffff;
             --text: #26352d;
             --muted: #718078;
             --border: #e5ebe6;
@@ -40,16 +37,16 @@
             text-decoration: none;
         }
 
-        /* NAVBAR */
-
         .navbar {
             width: 100%;
             padding: 18px 7%;
-            background: rgba(255, 255, 255, 0.97);
+            background: white;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -86,14 +83,14 @@
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 24px;
+            flex-wrap: wrap;
+            gap: 18px;
         }
 
         .nav-links a {
             color: #4d5b54;
             font-size: 14px;
             font-weight: 600;
-            transition: 0.2s;
         }
 
         .nav-links a:hover {
@@ -108,14 +105,12 @@
         }
 
         .nav-logout {
-            color: #c62828 !important;
+            color: var(--error) !important;
         }
-
-        /* PAGE */
 
         .page {
             min-height: calc(100vh - 80px);
-            padding: 65px 7% 80px;
+            padding: 55px 7% 80px;
             display: flex;
             justify-content: center;
         }
@@ -124,8 +119,6 @@
             width: 100%;
             max-width: 900px;
         }
-
-        /* PAGE HEADING */
 
         .page-heading {
             text-align: center;
@@ -140,7 +133,6 @@
             border-radius: 30px;
             font-size: 12px;
             font-weight: 800;
-            text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 14px;
         }
@@ -162,8 +154,6 @@
             max-width: 600px;
             margin: auto;
         }
-
-        /* FORM CARD */
 
         .form-card {
             background: white;
@@ -197,15 +187,12 @@
         .form-header h2 {
             color: var(--green-dark);
             font-size: 22px;
-            margin-bottom: 2px;
         }
 
         .form-header p {
             color: var(--muted);
             font-size: 13px;
         }
-
-        /* MAP */
 
         .map-section {
             margin-bottom: 28px;
@@ -214,12 +201,12 @@
         .map-section label {
             display: block;
             margin-bottom: 8px;
-            color: var(--text);
             font-size: 14px;
             font-weight: 700;
         }
 
         .map-help {
+            display: block;
             color: var(--muted);
             font-size: 13px;
             margin-bottom: 12px;
@@ -230,8 +217,8 @@
             height: 350px;
             border-radius: 12px;
             border: 1px solid #d7e5d8;
-            z-index: 1;
             background: #e9efe9;
+            z-index: 1;
         }
 
         #map-status {
@@ -263,8 +250,6 @@
             background: #e4f3e9;
         }
 
-        /* FORM GRID */
-
         .form-fields {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -282,9 +267,7 @@
         }
 
         .form-group label {
-            display: block;
             margin-bottom: 8px;
-            color: var(--text);
             font-size: 13px;
             font-weight: 700;
         }
@@ -300,8 +283,7 @@
             font-size: 14px;
             color: var(--text);
             outline: none;
-            background: #ffffff;
-            transition: 0.2s;
+            background: white;
         }
 
         .form-group textarea {
@@ -316,21 +298,10 @@
             box-shadow: 0 0 0 3px rgba(67, 160, 71, 0.10);
         }
 
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: #9aa7a0;
-        }
-
-        /* ERRORS */
-
         .field-error {
             color: var(--error);
             font-size: 12px;
             margin-top: 6px;
-        }
-
-        .field-error ul {
-            list-style: none;
         }
 
         .form-error-summary {
@@ -342,12 +313,6 @@
             color: var(--error);
             font-size: 13px;
         }
-
-        .form-error-summary ul {
-            padding-left: 20px;
-        }
-
-        /* FORM FOOTER */
 
         .form-actions {
             margin-top: 30px;
@@ -373,20 +338,15 @@
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
-            transition: 0.25s;
         }
 
         .submit-btn:hover {
             background: #17633e;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(31, 122, 77, 0.20);
         }
-
-        /* RESPONSIVE */
 
         @media (max-width: 750px) {
             .page {
-                padding: 50px 5% 60px;
+                padding: 40px 5% 60px;
             }
 
             .form-card {
@@ -400,10 +360,6 @@
             .form-group.full-width {
                 grid-column: auto;
             }
-
-            .nav-links {
-                gap: 10px;
-            }
         }
 
         @media (max-width: 600px) {
@@ -411,48 +367,16 @@
                 padding: 14px 5%;
             }
 
-            .brand-name {
-                font-size: 20px;
-            }
-
-            .brand-icon {
-                width: 38px;
-                height: 38px;
-                font-size: 19px;
-            }
-
             .nav-links {
-                gap: 7px;
+                gap: 10px;
             }
 
             .nav-links a:not(.nav-donate) {
                 display: none;
             }
 
-            .nav-donate {
-                padding: 9px 13px;
-                font-size: 12px;
-            }
-
-            .page {
-                padding: 45px 5% 55px;
-            }
-
-            .page-heading {
-                margin-bottom: 25px;
-            }
-
-            .eyebrow {
-                font-size: 10px;
-                padding: 6px 11px;
-            }
-
             .page-heading h1 {
                 font-size: 34px;
-            }
-
-            .page-heading p {
-                font-size: 14px;
             }
 
             .form-card {
@@ -462,33 +386,6 @@
 
             .form-header {
                 align-items: flex-start;
-                padding-bottom: 20px;
-                margin-bottom: 22px;
-            }
-
-            .form-header-icon {
-                width: 44px;
-                height: 44px;
-                font-size: 22px;
-            }
-
-            .form-header h2 {
-                font-size: 19px;
-            }
-
-            .form-header p {
-                font-size: 12px;
-            }
-
-            .form-fields {
-                gap: 18px;
-            }
-
-            .form-group input,
-            .form-group textarea,
-            .form-group select {
-                padding: 12px 13px;
-                font-size: 14px;
             }
 
             #food-map {
@@ -507,33 +404,12 @@
 
             .submit-btn {
                 width: 100%;
-                padding: 14px;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .page-heading h1 {
-                font-size: 30px;
-            }
-
-            .form-card {
-                padding: 20px 15px;
-            }
-
-            .form-header {
-                gap: 10px;
-            }
-
-            .form-header h2 {
-                font-size: 17px;
             }
         }
     </style>
 </head>
 
 <body>
-
-    <!-- NAVBAR -->
 
     <nav class="navbar">
         <a href="{% url 'home' %}" class="brand">
@@ -548,7 +424,7 @@
             <a href="{% url 'add_food' %}" class="nav-donate">Donate Food</a>
 
             {% if user.is_authenticated %}
-            <a href="{% url 'logout' %}" class="nav-logout">🚪 Logout</a>
+            <a href="{% url 'logout' %}" class="nav-logout">Logout</a>
             {% else %}
             <a href="{% url 'login' %}">Login</a>
             <a href="{% url 'register' %}">Register</a>
@@ -556,15 +432,12 @@
         </div>
     </nav>
 
-    <!-- MAIN PAGE -->
-
     <main class="page">
         <div class="donation-wrapper">
 
             <div class="page-heading">
                 <span class="eyebrow">🌱 Make a Difference</span>
                 <h1>Donate <span>Food</span></h1>
-
                 <p>
                     Share your surplus food with someone in your community
                     instead of letting it go to waste.
@@ -575,7 +448,6 @@
 
                 <div class="form-header">
                     <div class="form-header-icon">🍱</div>
-
                     <div>
                         <h2>Food Donation Details</h2>
                         <p>Tell us a little about the food you want to share.</p>
@@ -591,10 +463,8 @@
                     </div>
                     {% endif %}
 
-                    <!-- MAP SECTION -->
-
                     <div class="map-section">
-                        <label>📍 Select Food Pickup Location</label>
+                        <label for="food-map">📍 Select Food Pickup Location</label>
 
                         <p class="map-help">
                             Map par click karke pickup location select karo.
@@ -609,15 +479,12 @@
                             </button>
                         </div>
 
-                        <p id="map-status" aria-live="polite">
+                        <p id="map-status" role="status" aria-live="polite">
                             Map load hone ka wait karo.
                         </p>
                     </div>
 
-                    <!-- FORM FIELDS -->
-
                     <div class="form-fields">
-
                         {% for field in form %}
                         {% if field.name != 'latitude' and field.name != 'longitude' %}
                         <div
@@ -625,7 +492,7 @@
 
                             <label for="{{ field.id_for_label }}">
                                 {{ field.label }}
-                                {% if field.field.required %}<span aria-hidden="true">*</span>{% endif %}
+                                {% if field.field.required %}*{% endif %}
                             </label>
 
                             {{ field }}
@@ -635,18 +502,13 @@
                             {% endif %}
 
                             {% if field.errors %}
-                            <div class="field-error">
-                                {{ field.errors }}
-                            </div>
+                            <div class="field-error">{{ field.errors }}</div>
                             {% endif %}
 
                         </div>
                         {% endif %}
                         {% endfor %}
-
                     </div>
-
-                    <!-- FORM ACTIONS -->
 
                     <div class="form-actions">
                         <div class="form-note">
@@ -657,30 +519,31 @@
                             🍱 Submit Donation
                         </button>
                     </div>
-
                 </form>
             </div>
         </div>
     </main>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const form = document.getElementById("donation-form");
             const mapStatus = document.getElementById("map-status");
-            const currentLocationBtn = document.getElementById("current-location-btn");
+            const currentLocationBtn =
+                document.getElementById("current-location-btn");
             const mapElement = document.getElementById("food-map");
 
             if (!form || !mapElement || typeof L === "undefined") {
-                console.error("FoodBridge map or form could not be loaded.");
                 if (mapStatus) {
-                    mapStatus.textContent = "Map load nahi hua. Page refresh karke try karo.";
+                    mapStatus.textContent =
+                        "Leaflet load nahi hua. Internet connection check karke refresh karo.";
                 }
+
+                console.error("FoodBridge: Leaflet or map element missing.");
                 return;
             }
 
-            // Hidden coordinate fields
             let latitudeInput = document.getElementById("id_latitude");
             let longitudeInput = document.getElementById("id_longitude");
 
@@ -700,143 +563,152 @@
                 form.appendChild(longitudeInput);
             }
 
-            // Map initialization
-            const map = L.map("food-map").setView([28.6139, 77.2090], 12);
+            const map = L.map("food-map").setView(
+                [28.6139, 77.2090],
+                12
+            );
 
             L.tileLayer(
-                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
                     attribution:
-                        '&copy; OpenStreetMap contributors &copy; CARTO',
-                    subdomains: "abcd",
+                        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                     maxZoom: 19
                 }
-            ).addTo(map); {
-                attribution:
-                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                    maxZoom: 19
-            }).addTo(map);
+            ).addTo(map);
 
-        let marker = null;
-
-        function setSelectedLocation(lat, lng) {
-            lat = Number(lat);
-            lng = Number(lng);
-
-            if (
-                !Number.isFinite(lat) ||
-                !Number.isFinite(lng) ||
-                lat < -90 || lat > 90 ||
-                lng < -180 || lng > 180
-            ) {
-                mapStatus.textContent = "Invalid location. Map par dobara click karo.";
-                mapStatus.style.color = "#c62828";
-                return;
-            }
-
-            // Save coordinates into submitted form fields
-            latitudeInput.value = lat.toFixed(7);
-            longitudeInput.value = lng.toFixed(7);
-
-            if (!marker) {
-                marker = L.marker([lat, lng], {
-                    draggable: true
-                }).addTo(map);
-
-                marker.on("dragend", function (event) {
-                    const position = event.target.getLatLng();
-                    setSelectedLocation(position.lat, position.lng);
-                });
-            } else {
-                marker.setLatLng([lat, lng]);
-            }
-
-            map.setView([lat, lng], 15);
-
-            mapStatus.textContent =
-                "Location selected! Latitude: " +
-                latitudeInput.value +
-                ", Longitude: " +
-                longitudeInput.value;
-
-            mapStatus.style.color = "#16803c";
-        }
-
-        // Select a location by clicking the map
-        map.on("click", function (event) {
-            setSelectedLocation(event.latlng.lat, event.latlng.lng);
-        });
-
-        // Use current location (browser permission required)
-        currentLocationBtn.addEventListener("click", function () {
-            if (!navigator.geolocation) {
+            map.on("tileerror", function () {
                 mapStatus.textContent =
-                    "Location detection supported nahi hai. Map par click karke location select karo.";
-                mapStatus.style.color = "#c62828";
-                return;
-            }
-
-            mapStatus.textContent = "Current location find ho rahi hai...";
-            mapStatus.style.color = "#555";
-
-            navigator.geolocation.getCurrentPosition(
-                function (position) {
-                    setSelectedLocation(
-                        position.coords.latitude,
-                        position.coords.longitude
-                    );
-                },
-                function (error) {
-                    let message = "Location nahi mil saki. Map par manually click karo.";
-
-                    if (error.code === 1) {
-                        message = "Location permission allow karo, ya map par manually click karo.";
-                    } else if (error.code === 3) {
-                        message = "Location request timeout ho gaya. Map par manually click karo.";
-                    }
-
-                    mapStatus.textContent = message;
-                    mapStatus.style.color = "#c62828";
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 15000,
-                    maximumAge: 0
-                }
-            );
-        });
-
-        // Fix map dimensions after rendering
-        setTimeout(function () {
-            map.invalidateSize();
-        }, 300);
-
-        // Validate coordinates before submitting
-        form.addEventListener("submit", function (event) {
-            const lat = latitudeInput.value.trim();
-            const lng = longitudeInput.value.trim();
-
-            if (lat === "" || lng === "") {
-                event.preventDefault();
-
-                mapStatus.textContent =
-                    "Food submit karne se pehle map par pickup location select karo.";
-                mapStatus.style.color = "#c62828";
-
-                mapElement.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center"
-                });
-
-                return;
-            }
-
-            // Confirm coordinates are included in the form submission
-            console.log("FoodBridge coordinates:", {
-                latitude: lat,
-                longitude: lng
+                    "Map tiles load nahi ho rahe. Network ya map provider access check karo.";
             });
-        });
+
+            let marker = null;
+
+            function setSelectedLocation(lat, lng) {
+                lat = Number(lat);
+                lng = Number(lng);
+
+                if (
+                    !Number.isFinite(lat) ||
+                    !Number.isFinite(lng) ||
+                    lat < -90 || lat > 90 ||
+                    lng < -180 || lng > 180
+                ) {
+                    mapStatus.textContent =
+                        "Invalid location. Map par dobara click karo.";
+                    mapStatus.style.color = "#c62828";
+                    return;
+                }
+
+                latitudeInput.value = lat.toFixed(7);
+                longitudeInput.value = lng.toFixed(7);
+
+                if (!marker) {
+                    marker = L.marker([lat, lng], {
+                        draggable: true
+                    }).addTo(map);
+
+                    marker.on("dragend", function (event) {
+                        const position = event.target.getLatLng();
+                        setSelectedLocation(position.lat, position.lng);
+                    });
+                } else {
+                    marker.setLatLng([lat, lng]);
+                }
+
+                map.setView([lat, lng], 15);
+
+                mapStatus.textContent =
+                    "Location selected! Latitude: " +
+                    latitudeInput.value +
+                    ", Longitude: " +
+                    longitudeInput.value;
+
+                mapStatus.style.color = "#16803c";
+            }
+
+            map.on("click", function (event) {
+                setSelectedLocation(
+                    event.latlng.lat,
+                    event.latlng.lng
+                );
+            });
+
+            currentLocationBtn.addEventListener("click", function () {
+                if (!navigator.geolocation) {
+                    mapStatus.textContent =
+                        "Location detection supported nahi hai. Map par click karke location select karo.";
+                    mapStatus.style.color = "#c62828";
+                    return;
+                }
+
+                mapStatus.textContent =
+                    "Current location find ho rahi hai...";
+                mapStatus.style.color = "#555";
+
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        setSelectedLocation(
+                            position.coords.latitude,
+                            position.coords.longitude
+                        );
+                    },
+                    function (error) {
+                        let errorMessage =
+                            "Location nahi mil saki. Map par manually click karo.";
+
+                        if (error.code === 1) {
+                            errorMessage =
+                                "Browser settings mein location permission allow karo, ya map par click karo.";
+                        } else if (error.code === 2) {
+                            errorMessage =
+                                "Current location unavailable hai. Map par manually click karo.";
+                        } else if (error.code === 3) {
+                            errorMessage =
+                                "Location request timeout ho gaya. Dobara try karo ya map par click karo.";
+                        }
+
+                        mapStatus.textContent = errorMessage;
+                        mapStatus.style.color = "#c62828";
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 15000,
+                        maximumAge: 60000
+                    }
+                );
+            });
+
+            map.whenReady(function () {
+                setTimeout(function () {
+                    map.invalidateSize();
+                }, 300);
+            });
+
+            form.addEventListener("submit", function (event) {
+                const lat = latitudeInput.value.trim();
+                const lng = longitudeInput.value.trim();
+
+                if (lat === "" || lng === "") {
+                    event.preventDefault();
+
+                    mapStatus.textContent =
+                        "Food submit karne se pehle map par pickup location select karo.";
+                    mapStatus.style.color = "#c62828";
+
+                    mapElement.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+
+                    return;
+                }
+
+                console.log("FoodBridge coordinates:", {
+                    latitude: lat,
+                    longitude: lng
+                });
+            });
         });
     </script>
 
