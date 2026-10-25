@@ -12,6 +12,7 @@ from decimal import Decimal, InvalidOperation
 from django.db.models import Sum
 import secrets
 import math
+import os
 from .forms import FoodForm, NGOProfileForm
 from .models import Food, FoodRequest, NGOProfile, Pickup, UserProfile
 
@@ -219,11 +220,11 @@ def find_food(request):
     user_lon = request.GET.get("lon")
 
     foods = Food.objects.filter(
-    remaining_quantity__gt=0
-).filter(
-    Q(best_before__isnull=True) |
-    Q(best_before__gt=timezone.now())
-)
+        remaining_quantity__gt=0
+    ).filter(
+        Q(best_before__isnull=True) |
+        Q(best_before__gt=timezone.now())
+    )
 
     if query:
         foods = foods.filter(
@@ -316,6 +317,7 @@ def find_food(request):
         "food_locations": food_locations,
         "user_lat": user_lat,
         "user_lon": user_lon,
+        "maptiler_api_key": os.environ.get("MAPTILER_API_KEY", ""),
     })
 
 

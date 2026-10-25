@@ -1,52 +1,106 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Elements
+
+"use strict";
+
+document.addEventListener("DOMContentLoaded", () => {
     const mapElement = document.getElementById("food-locations-map");
-    const message = document.getElementById("map-message");
+    const mapMessage = document.getElementById("map-message");
     const nearbyButton = document.getElementById("nearby-food-btn");
     const nearbyStatus = document.getElementById("nearby-status");
-    const dataElement = document.getElementById("food-map-data");
 
-    // 1. Find Food Near Me
-    if (nearbyButton && nearbyStatus) {
-        nearbyButton.addEventListener("click", function () {
+    // Update food expiry countdowns.
+    function updateExpiryCountdowns() {
+        document.querySelectorAll("[data-expiry]").forEach((element) => {
+            const expiryDate = new Date(element.dataset.expiry);
+            const difference = expiryDate.getTime() - Date.now();
+
+            element.classList.remove(
+                "expiry-critical",
+                "expiry-urgent",
+                "expiry-expired",
+                "expiry-unknown"
+            );
+
+            if (Number.isNaN(expiryDate.getTime())) {
+                element.textContent = "Expiry time unavailable";
+                element.classList.add("expiry-unknown");
+                return;
+            }
+
+            if (difference <= 0) {
+                element.textContent = "⚠️ Expired";
+                element.classList.add("expiry-expired");
+                return;
+            }
+
+            const totalMinutes = Math.floor(difference / 60000);
+            const days = Math.floor(totalMinutes / 1440);
+            const hours = Math.floor((totalMinutes % 1440) / 60);
+            const minutes = totalMinutes % 60;
+
+            if (days > 0) {
+                element.textContent = `⏳ ${days}d ${hours}h remaining`;
+            } else if (hours > 0) {
+                element.textContent = `⏳ ${hours}h ${minutes}m remaining`;
+            } else {
+                element.textContent = `⚠️ ${minutes}m remaining`;
+            }
+
+            if (difference < 60 * 60 * 1000) {
+                element.classList.add("expiry-critical");
+            } else if (difference < 24 * 60 * 60 * 1000) {
+                element.classList.add("expiry-urgent");
+            }
+        });
+    }
+
+    updateExpiryCountdowns();
+    window.setInterval(updateExpiryCountdowns, 60000);
+
+    // Nearby Food button — works independently of the map.
+    if (nearbyButton) {
+        nearbyButton.addEventListener("click", () => {
             if (!navigator.geolocation) {
-                nearbyStatus.textContent =
-                    "Your browser does not support location access.";
+                if (nearbyStatus) {
+                    nearbyStatus.textContent =
+                        "Your browser does not support location access.";
+                }
                 return;
             }
 
             nearbyButton.disabled = true;
-            nearbyStatus.textContent = "Getting your current location...";
+
+            if (nearbyStatus) {
+                nearbyStatus.textContent = "Finding your location...";
+            }
 
             navigator.geolocation.getCurrentPosition(
-                function (position) {
-                    const params = new URLSearchParams(
-                        window.location.search
-                    );
+                (position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
 
-                    params.set("lat", position.coords.latitude);
-                    params.set("lon", position.coords.longitude);
+                    if (nearbyStatus) {
+                        nearbyStatus.textContent =
+                            "Location found! Sorting food by distance...";
+                    }
 
-                    nearbyStatus.textContent =
-                        "Location found! Loading nearby food...";
-
-                    const query = params.toString();
-                    window.location.href =
-                        window.location.pathname +
-                        (query ? "?" + query : "");
+                    const url = new URL(window.location.href);
+                    url.searchParams.set("lat", latitude);
+                    url.searchParams.set("lon", longitude);
+                    window.location.assign(url.toString());
                 },
-                function (error) {
+                (error) => {
                     nearbyButton.disabled = false;
 
-                    if (error.code === error.PERMISSION_DENIED) {
+                    const messages = {
+                        1: "Location permission denied. Allow location access in browser settings.",
+                        2: "Your location could not be determined. Please try again.",
+                        3: "Location request timed out. Please try again."
+                    };
+
+                    if (nearbyStatus) {
                         nearbyStatus.textContent =
-                            "Location permission denied. Allow location in your browser settings.";
-                    } else if (error.code === error.TIMEOUT) {
-                        nearbyStatus.textContent =
-                            "Location request timed out. Please try again.";
-                    } else {
-                        nearbyStatus.textContent =
-                            "Could not get location. Please try again.";
+                            messages[error.code] ||
+                            "Unable to get your location. Please try again.";
                     }
                 },
                 {
@@ -58,118 +112,46 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 2. Food expiry countdown
-    function updateFoodExpiryCountdowns() {
-        const now = Date.now();
-
-        document.querySelectorAll(
-            ".expiry-countdown[data-expiry]"
-        ).forEach(function (element) {
-            const expiryTime = new Date(
-                element.dataset.expiry
-            ).getTime();
-
-            element.classList.remove(
-                "expiry-critical",
-                "expiry-urgent",
-                "expiry-expired"
-            );
-
-            if (!Number.isFinite(expiryTime)) {
-                element.textContent = "Expiry time unavailable";
-                return;
-            }
-
-            const remaining = expiryTime - now;
-
-            if (remaining <= 0) {
-                element.textContent = "⛔ Expired";
-                element.classList.add("expiry-expired");
-                return;
-            }
-
-            const totalMinutes = Math.floor(remaining / 60000);
-            const days = Math.floor(totalMinutes / 1440);
-            const hours = Math.floor((totalMinutes % 1440) / 60);
-            const minutes = totalMinutes % 60;
-
-            let timeText;
-
-            if (days > 0) {
-                timeText =
-                    `${days} day(s), ${hours} hour(s) remaining`;
-            } else if (hours > 0) {
-                timeText =
-                    `${hours} hour(s), ${minutes} min remaining`;
-            } else {
-                timeText = `${minutes} min remaining`;
-            }
-
-            if (remaining <= 6 * 60 * 60 * 1000) {
-                element.textContent = `🔴 Critical — ${timeText}`;
-                element.classList.add("expiry-critical");
-            } else if (remaining <= 24 * 60 * 60 * 1000) {
-                element.textContent = `🟠 Urgent — ${timeText}`;
-                element.classList.add("expiry-urgent");
-            } else {
-                element.textContent = `🟢 Fresh — ${timeText}`;
-            }
-        });
-    }
-
-    updateFoodExpiryCountdowns();
-    setInterval(updateFoodExpiryCountdowns, 60000);
-
-    // 3. Initialize Leaflet map
-    if (!mapElement || typeof L === "undefined") {
-        if (message) {
-            message.textContent =
-                "Map could not load. Please refresh the page.";
-        }
-        console.error(
-            "FoodBridge: Map element or Leaflet library is missing."
-        );
-        return;
-    }
-
-    // Read food location data
+    // Read food locations from Django.
     let foodLocations = [];
 
     try {
-        if (!dataElement) {
-            throw new Error("Food map data element not found.");
-        }
-
-        foodLocations = JSON.parse(dataElement.textContent);
+        const dataElement = document.getElementById("food-map-data");
+        foodLocations = JSON.parse(dataElement?.textContent || "[]");
 
         if (!Array.isArray(foodLocations)) {
-            throw new Error("Food map data must be an array.");
+            foodLocations = [];
         }
     } catch (error) {
-        if (message) {
-            message.textContent = "Could not read food location data.";
-        }
-        console.error("FoodBridge map data error:", error);
+        console.error("Could not read food location data:", error);
+    }
+
+    // Initialize the map.
+    if (!mapElement) {
+        console.error("Map container #food-locations-map was not found.");
         return;
     }
 
-    // Default map center: New Delhi
-    const map = L.map(mapElement).setView([28.6139, 77.2090], 11);
-
-    // Map tiles
-    L.tileLayer(
-        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-            attribution:
-                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 19
+    if (typeof L === "undefined") {
+        if (mapMessage) {
+            mapMessage.textContent =
+                "Map library failed to load. Check your internet connection and refresh.";
         }
-    ).addTo(map);
+        console.error("Leaflet (L) is not loaded.");
+        return;
+    }
 
-    // 4. Add food markers
-    const bounds = [];
+    const map = L.map(mapElement).setView([20.5937, 78.9629], 5);
 
-    foodLocations.forEach(function (food) {
+    // OpenStreetMap — no API key required.
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+        maxZoom: 19
+    }).addTo(map);
+
+    const markerGroup = L.featureGroup().addTo(map);
+
+    foodLocations.forEach((food) => {
         const latitude = Number(food.latitude);
         const longitude = Number(food.longitude);
 
@@ -184,67 +166,56 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        const marker = L.marker([latitude, longitude]).addTo(map);
+        const marker = L.marker([latitude, longitude]);
 
-        // Build popup safely
+        // Build popup safely without inserting raw HTML.
         const popup = document.createElement("div");
-        const title = document.createElement("strong");
 
-        title.textContent = food.name || "Available Food";
-        popup.appendChild(title);
+        const title = document.createElement("strong");
+        title.textContent = food.name || "Available food";
+
+        const location = document.createElement("p");
+        location.textContent = food.location || "Location not provided";
 
         const quantity = document.createElement("p");
         quantity.textContent =
-            "Quantity: " + (food.quantity ?? "Not specified");
-        popup.appendChild(quantity);
+            `Quantity: ${food.quantity ?? "Not specified"}`;
 
-        const location = document.createElement("p");
-        location.textContent =
-            "Location: " + (food.location || "Not specified");
-        popup.appendChild(location);
+        popup.append(title, location, quantity);
 
-        if (
-            food.distance_km !== null &&
-            food.distance_km !== undefined &&
-            food.distance_km !== ""
-        ) {
+        if (food.distance_km !== null && food.distance_km !== undefined) {
             const distance = document.createElement("p");
-            distance.textContent =
-                "Distance: " + food.distance_km + " km";
+            distance.textContent = `Distance: ${food.distance_km} km`;
             popup.appendChild(distance);
         }
 
         if (food.detail_url) {
             const link = document.createElement("a");
             link.href = food.detail_url;
-            link.textContent = "View Food Details";
+            link.textContent = "View food details";
             popup.appendChild(link);
         }
 
         marker.bindPopup(popup);
-        bounds.push([latitude, longitude]);
+        marker.addTo(markerGroup);
     });
 
-    // 5. Fit map to available food locations
-    if (bounds.length > 0) {
-        map.fitBounds(bounds, {
-            padding: [25, 25],
-            maxZoom: 14
-        });
+    if (markerGroup.getLayers().length > 0) {
+        map.fitBounds(markerGroup.getBounds().pad(0.15));
 
-        if (message) {
-            message.textContent =
-                "Showing " + bounds.length +
-                " food location(s) on the map.";
+        if (markerGroup.getLayers().length === 1) {
+            map.setZoom(Math.max(map.getZoom(), 12));
         }
-    } else if (message) {
-        message.textContent =
-            "No food locations with saved coordinates are available on the map yet.";
+
+        if (mapMessage) {
+            mapMessage.textContent =
+                `Showing ${markerGroup.getLayers().length} food location(s) on the map.`;
+        }
+    } else if (mapMessage) {
+        mapMessage.textContent =
+            "No food locations with valid coordinates are available yet.";
     }
 
-    // Fix map sizing after page layout
-    setTimeout(function () {
-        map.invalidateSize();
-    }, 300);
-
+    // Correct map layout if the map container was initially hidden.
+    window.setTimeout(() => map.invalidateSize(), 100);
 });

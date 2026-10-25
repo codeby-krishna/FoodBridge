@@ -410,7 +410,6 @@
 </head>
 
 <body>
-
     <nav class="navbar">
         <a href="{% url 'home' %}" class="brand">
             <div class="brand-icon">🍲</div>
@@ -434,7 +433,6 @@
 
     <main class="page">
         <div class="donation-wrapper">
-
             <div class="page-heading">
                 <span class="eyebrow">🌱 Make a Difference</span>
                 <h1>Donate <span>Food</span></h1>
@@ -445,7 +443,6 @@
             </div>
 
             <div class="form-card">
-
                 <div class="form-header">
                     <div class="form-header-icon">🍱</div>
                     <div>
@@ -465,7 +462,6 @@
 
                     <div class="map-section">
                         <label for="food-map">📍 Select Food Pickup Location</label>
-
                         <p class="map-help">
                             Map par click karke pickup location select karo.
                             Marker ko drag karke bhi location adjust kar sakte ho.
@@ -489,7 +485,6 @@
                         {% if field.name != 'latitude' and field.name != 'longitude' %}
                         <div
                             class="form-group {% if field.name == 'description' or field.name == 'location' %}full-width{% endif %}">
-
                             <label for="{{ field.id_for_label }}">
                                 {{ field.label }}
                                 {% if field.field.required %}*{% endif %}
@@ -504,7 +499,6 @@
                             {% if field.errors %}
                             <div class="field-error">{{ field.errors }}</div>
                             {% endif %}
-
                         </div>
                         {% endif %}
                         {% endfor %}
@@ -530,8 +524,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const form = document.getElementById("donation-form");
             const mapStatus = document.getElementById("map-status");
-            const currentLocationBtn =
-                document.getElementById("current-location-btn");
+            const currentLocationBtn = document.getElementById("current-location-btn");
             const mapElement = document.getElementById("food-map");
 
             if (!form || !mapElement || typeof L === "undefined") {
@@ -539,7 +532,6 @@
                     mapStatus.textContent =
                         "Leaflet load nahi hua. Internet connection check karke refresh karo.";
                 }
-
                 console.error("FoodBridge: Leaflet or map element missing.");
                 return;
             }
@@ -563,19 +555,13 @@
                 form.appendChild(longitudeInput);
             }
 
-            const map = L.map("food-map").setView(
-                [28.6139, 77.2090],
-                12
-            );
+            const map = L.map("food-map").setView([28.6139, 77.2090], 12);
 
-            L.tileLayer(
-                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                {
-                    attribution:
-                        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                    maxZoom: 19
-                }
-            ).addTo(map);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution:
+                    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+                maxZoom: 19
+            }).addTo(map);
 
             map.on("tileerror", function () {
                 mapStatus.textContent =
@@ -628,10 +614,7 @@
             }
 
             map.on("click", function (event) {
-                setSelectedLocation(
-                    event.latlng.lat,
-                    event.latlng.lng
-                );
+                setSelectedLocation(event.latlng.lat, event.latlng.lng);
             });
 
             currentLocationBtn.addEventListener("click", function () {
@@ -642,8 +625,7 @@
                     return;
                 }
 
-                mapStatus.textContent =
-                    "Current location find ho rahi hai...";
+                mapStatus.textContent = "Current location find ho rahi hai...";
                 mapStatus.style.color = "#555";
 
                 navigator.geolocation.getCurrentPosition(
@@ -711,7 +693,6 @@
             });
         });
     </script>
-
 </body>
 
 </html>
