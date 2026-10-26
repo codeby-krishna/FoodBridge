@@ -1,0 +1,13 @@
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mindex 075cf57..0568c5d 100644[m
+[1m--- a/.gitignore[m
+[1m+++ b/.gitignore[m
+[36m@@ -9,4 +9,6 @@[m [mdb.sqlite3[m
+ !.env.example[m
+ staticfiles/[m
+ .DS_Store[m
+[31m-accounts.json[m
+\ No newline at end of file[m
+[32m+[m[32maccounts.json[m
+[32m+[m[32m.vercel[m
+[32m+[m[32m.env*[m
